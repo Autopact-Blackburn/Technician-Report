@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <title>Blackburn Kia, Nissan and GWM – Technician Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root {
+      --bg: #050510;
+      --bg-alt: #0f1020;
+      --card: #141527;
+      --accent: #00bcd4;
+      --accent-soft: #00bcd466;
+      --text: #f5f5f5;
+      --muted: #a0a4c0;
+      --danger: #ff5252;
+      --warning: #ffc107;
+      --success: #4caf50;
+      --purple: #9c27b0;
+      --border: #2a2d45;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    body.light {
+      --bg: #f3f4fb;
+      --bg-alt: #ffffff;
+      --card: #ffffff;
+      --accent: #00796b;
+      --accent-soft: #00796b44;
+      --text: #111827;
+      --muted: #6b7280;
+      --danger: #d32f2f;
+      --warning: #ed6c02;
+      --success: #2e7d32;
+      --purple: #7b1fa2;
+      --border: #d1d5db;
+      --shadow: 0 6px 18px rgba(15, 23, 42, 0.15);
+      background: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #111637 0, #050510 45%, #020208 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 1200px;
+      padding: 16px 16px 32px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    header h2 {
+      margin: 2px 0 0;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .btn-small {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      background: var(--bg-alt);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-small span.icon {
+      font-size: 0.95rem;
+    }
+
+    .btn-small:hover {
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-toggle {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      background: var(--bg-alt);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow);
+    }
+
+    .theme-toggle span.icon {
+      font-size: 1rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 2.1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.4));
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 14px 16px 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    body.light .card {
+      background: var(--bg-alt);
+      backdrop-filter: none;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .section-subtitle {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .tech-select-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      min-width: 180px;
+    }
+
+    .tech-select-group label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .tech-select-group select {
+      background: #070816;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    body.light .tech-select-group select {
+      background: #f9fafb;
+      border-color: #d1d5db;
+      color: var(--text);
+    }
+
+    .gauge-legend {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .pill-kpi {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    body.light .pill-kpi {
+      background: #f3f4ff;
+      border-color: #e5e7eb;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.red { background: var(--danger); }
+    .legend-dot.yellow { background: var(--warning); }
+    .legend-dot.green { background: var(--success); }
+
+    .gauges {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .gauges-labour {
+      margin-top: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 900px) {
+      .gauges {
+        grid-template-columns: 1fr;
+      }
+      .gauges-labour {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .gauge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.04), rgba(0,0,0,0.4));
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    body.light .gauge-card {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+
+    .gauge-wrapper {
+      width: 100%;
+      max-width: 260px;
+    }
+
+    .gauge {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .gauge-track {
+      fill: none;
+      stroke: #21243a;
+      stroke-width: 8;
+      opacity: 0.7;
+    }
+
+    body.light .gauge-track {
+      stroke: #e5e7eb;
+    }
+
+    .gauge-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transform-origin: 50px 50px;
+      transform: rotate(-180deg); /* 180° = 100% of visible band */
+      stroke-dasharray: 0 999;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.35s ease-out, stroke 0.2s ease-out;
+    }
+
+    .gauge-fill--red { stroke: var(--danger); }
+    .gauge-fill--yellow { stroke: var(--warning); }
+    .gauge-fill--green { stroke: var(--success); }
+
+    .gauge-inner-label {
+      font-size: 6px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill: var(--muted);
+    }
+
+    .gauge-inner-value {
+      font-size: 11px;
+      font-weight: 700;
+      fill: var(--text);
+    }
+
+    .gauge-band {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .info-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .info-strip {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-tile {
+      border-radius: 12px;
+      padding: 8px 10px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    body.light .info-tile {
+      background: #f9fafb;
+      border-color: #e5e7eb;
+    }
+
+    .info-tile-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .info-tile-main {
+      font-size: 0.9rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .info-tile-sub {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .info-tile.tile--red {
+      background: linear-gradient(135deg, rgba(255,82,82,0.25), rgba(0,0,0,0.6));
+      border-color: rgba(255,82,82,0.7);
+    }
+    .info-tile.tile--yellow {
+      background: linear-gradient(135deg, rgba(255,193,7,0.25), rgba(0,0,0,0.6));
+      border-color: rgba(255,193,7,0.7);
+    }
+    .info-tile.tile--green {
+      background: linear-gradient(135deg, rgba(76,175,80,0.25), rgba(0,0,0,0.6));
+      border-color: rgba(76,175,80,0.7);
+    }
+    .info-tile.tile--purple {
+      background: linear-gradient(135deg, rgba(156,39,176,0.25), rgba(0,0,0,0.6));
+      border-color: rgba(156,39,176,0.7);
+    }
+
+    body.light .info-tile.tile--red,
+    body.light .info-tile.tile--yellow,
+    body.light .info-tile.tile--green,
+    body.light .info-tile.tile--purple {
+      color: var(--text);
+    }
+    .insights-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .insights-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #00bcd4, #4caf50);
+      color: #021015;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border: none;
+      font-size: 0.8rem;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 188, 212, 0.4);
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out;
+      align-self: flex-start;
+    }
+
+    .insights-button span.icon {
+      font-size: 1.1rem;
+    }
+
+    .insights-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(0, 188, 212, 0.55);
+    }
+
+    .rank-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 4px;
+    }
+
+    .rank-table th,
+    .rank-table td {
+      padding: 6px 4px;
+      text-align: right;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      white-space: nowrap;
+    }
+
+    body.light .rank-table th,
+    body.light .rank-table td {
+      border-bottom-color: #e5e7eb;
+    }
+
+    .rank-table th:first-child,
+    .rank-table td:first-child {
+      text-align: left;
+    }
+
+    .rank-table th {
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 0.72rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+
+    .badge--top {
+      background: linear-gradient(135deg, #ffc107, #ff9800);
+      color: #111;
+      font-weight: 600;
+    }
+
+    .badge-emoji {
+      margin-left: 4px;
+    }
+
+    .metrics-card {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 8px;
+    }
+
+    .row-bottom {
+      background: rgba(255,82,82,0.15);
+    }
+
+    body.light .row-bottom {
+      background: #fee2e2;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 18px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      min-width: 260px;
+      flex: 1;
+    }
+
+    input[type="file"],
+    .modal-body input[type="number"],
+    .modal-body input[type="text"] {
+      background: #070816;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    body.light input[type="file"],
+    body.light .modal-body input[type="number"],
+    body.light .modal-body input[type="text"] {
+      background: #f9fafb;
+      border-color: #d1d5db;
+      color: var(--text);
+    }
+
+    input[type="file"]:focus,
+    .modal-body input[type="number"]:focus,
+    .modal-body input[type="text"]:focus {
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #070816;
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    body.light .pill {
+      background: #f3f4ff;
+      border-color: #e5e7eb;
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Modals */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      z-index: 90;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    .modal-panel {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: min(390px, 100%);
+      height: 100%;
+      background: var(--bg-alt);
+      box-shadow: -12px 0 30px rgba(0,0,0,0.65);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-out;
+    }
+
+    .modal-overlay.active .modal-panel {
+      transform: translateX(0);
+    }
+
+    .modal-header {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .modal-close {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .modal-body {
+      padding: 10px 14px 14px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Extra wrapping for safety */
+    .modal-body {
+      white-space: normal;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    .modal-body p {
+      margin: 4px 0 8px;
+    }
+
+    .ultimate-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .ultimate-table th,
+    .ultimate-table td {
+      padding: 6px 4px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: right;
+    }
+
+    body.light .ultimate-table th,
+    body.light .ultimate-table td {
+      border-bottom-color: #e5e7eb;
+    }
+
+    .ultimate-table th:first-child,
+    .ultimate-table td:first-child {
+      text-align: left;
+    }
+
+    .ultimate-table th {
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 0.72rem;
+    }
+
+    .ultimate-badge {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 0.7rem;
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+    }
+
+    .ultimate-badge--top {
+      background: linear-gradient(135deg, #ffc107, #ff9800);
+      color: #111827;
+      font-weight: 600;
+    }
+
+    /* Insights severity + accordion */
+
+    .insights-section {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.4);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    body.light .insights-section {
+      background: #f9fafb;
+    }
+
+    .insights-section-header {
+      width: 100%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+
+    .insights-section-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .insights-section-title span.icon {
+      font-size: 1rem;
+    }
+
+    .insights-badge {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .insights-badge.critical {
+      background: rgba(255,82,82,0.2);
+      color: var(--danger);
+    }
+
+    .insights-badge.watch {
+      background: rgba(255,193,7,0.18);
+      color: var(--warning);
+    }
+
+    .insights-badge.good {
+      background: rgba(76,175,80,0.2);
+      color: var(--success);
+    }
+
+    .insights-badge.info {
+      background: rgba(0,188,212,0.18);
+      color: var(--accent);
+    }
+
+    .insights-section-body {
+      padding: 0 10px 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: none;
+    }
+
+    .insights-section-body.open {
+      display: block;
+    }
+
+    .insights-section-body ul {
+      padding-left: 18px;
+      margin: 6px 0 2px;
+    }
+
+    .insights-section-body li {
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        align-self: stretch;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div>
+        <h1>Blackburn Kia, Nissan and GWM</h1>
+        <h2>Technician Performance Dashboard</h2>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggle" class="theme-toggle">
+          <span class="icon">🌙</span>
+          <span>Dark mode</span>
+        </button>
+        <button id="settingsButton" class="btn-small">
+          <span class="icon">⚙</span>
+          <span>Settings</span>
+        </button>
+        <button id="ultimateButton" class="btn-small">
+          <span class="icon">⭐</span>
+          <span>Ultimate Ranking</span>
+        </button>
+        <button id="snapshotButton" class="btn-small">
+          <span class="icon">📄</span>
+          <span>Save Snapshot</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="layout">
+      <!-- Gauges + info strip -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">KPI Gauges</div>
+            <div class="section-subtitle" id="viewLabel">Workshop Total – All Technicians</div>
+          </div>
+          <div class="tech-select-group">
+            <label for="techSelect">Technician / View</label>
+            <select id="techSelect"><option value="__TOTAL__">Workshop Total (All Techs)</option><option value="Alan Grossman">Alan Grossman</option><option value="San Croos">San Croos</option><option value="Rebekka Walker">Rebekka Walker</option><option value="Ruchira Kankanamalage">Ruchira Kankanamalage</option><option value="Thomas Nooteboom">Thomas Nooteboom</option><option value="Alexander Lee">Alexander Lee</option><option value="Marley Gayle">Marley Gayle</option><option value="Aaron Lewis">Aaron Lewis</option><option value="Nipun Vidanage">Nipun Vidanage</option><option value="Peter Tryfonos">Peter Tryfonos</option><option value="Alex Hui">Alex Hui</option><option value="Stephen Thompson">Stephen Thompson</option><option value="Nixon Frasco">Nixon Frasco</option><option value="Jason Yu">Jason Yu</option><option value="Jasper Menzi">Jasper Menzi</option><option value="Suraj">Suraj</option><option value="Kon Loudovaris">Kon Loudovaris</option><option value="Liam Wilkins-kaighin">Liam Wilkins-kaighin</option><option value="Nicolas Pritchard">Nicolas Pritchard</option></select>
+          </div>
+        </div>
+
+        <div class="gauge-legend">
+          <div class="pill-kpi"><span class="legend-dot red"></span> &lt;70% = Red</div>
+          <div class="pill-kpi"><span class="legend-dot yellow"></span> 70–100% = Yellow</div>
+          <div class="pill-kpi"><span class="legend-dot green"></span> &gt;100% = Green</div>
+        </div>
+
+        <!-- Top KPI gauges -->
+        <div class="gauges">
+          <!-- Productivity -->
+          <div class="gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="gauge" viewBox="0 0 100 60">
+                <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle id="gaugeProdFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 126.165;"></circle>
+                <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
+                  Productivity
+                </text>
+                <text id="innerValProductivity" x="50" y="44" text-anchor="middle" class="gauge-inner-value">100%</text>
+              </svg>
+            </div>
+            <div class="gauge-band">Time clocked on jobs vs available hours</div>
+          </div>
+
+          <!-- Efficiency -->
+          <div class="gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="gauge" viewBox="0 0 100 60">
+                <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle id="gaugeEffFill" class="gauge-fill gauge-fill--green" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 125.664;"></circle>
+                <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
+                  Efficiency
+                </text>
+                <text id="innerValEfficiency" x="50" y="44" text-anchor="middle" class="gauge-inner-value">103%</text>
+              </svg>
+            </div>
+            <div class="gauge-band">Hours sold vs hours taken</div>
+          </div>
+
+          <!-- Charge Eff -->
+          <div class="gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="gauge" viewBox="0 0 100 60">
+                <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle id="gaugeChargeFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 130.926;"></circle>
+                <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
+                  Charge Eff
+                </text>
+                <text id="innerValCharging" x="50" y="44" text-anchor="middle" class="gauge-inner-value">96%</text>
+              </svg>
+            </div>
+            <div class="gauge-band">What you clock vs what gets billed</div>
+          </div>
+        </div>
+
+        <!-- Info tiles -->
+        <div class="info-strip">
+          <div class="info-tile tile--red" id="tileLoad">
+            <div class="info-tile-title">Hours Charged vs Worked</div>
+            <div class="info-tile-main">Charged: 1667.8 h • Worked: 1740.7 h</div>
+            <div class="info-tile-sub">Under-fed by 72.9 h. Talk to the controller about more flagged hours.</div>
+          </div>
+          <div class="info-tile tile--green" id="tileClock">
+            <div class="info-tile-title">Clocking Accuracy</div>
+            <div class="info-tile-main">Clocking Accuracy: 107.0%</div>
+            <div class="info-tile-sub">Excellent. Workshop and accounting are aligned (leakage ~7.0%).</div>
+          </div>
+          <div class="info-tile tile--green" id="tileConsistency">
+            <div class="info-tile-title">Consistency Score</div>
+            <div class="info-tile-main">Consistency Score: 97/100</div>
+            <div class="info-tile-sub">Very stable performance. Productivity, Efficiency &amp; Charge Eff are all hovering around target.</div>
+          </div>
+        </div>
+
+        <!-- Labour Sales gauges -->
+        <div class="gauges gauges-labour">
+          <!-- Labour Sales / Workshop vs Target -->
+          <div class="gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="gauge" viewBox="0 0 100 60">
+                <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle id="gaugeLabourTotalFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 172.13;"></circle>
+                <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
+                  Labour Sales
+                </text>
+                <text id="innerValLabourTotal" x="50" y="44" text-anchor="middle" class="gauge-inner-value">$239,489</text>
+              </svg>
+            </div>
+            <div class="gauge-band" id="labourTotalBand">Workshop vs Target (63%)</div>
+          </div>
+
+          <!-- Target % / Contribution -->
+          <div class="gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="gauge" viewBox="0 0 100 60">
+                <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle id="gaugeLabourTargetFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 172.13;"></circle>
+                <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
+                  Target %
+                </text>
+                <text id="innerValLabourTarget" x="50" y="44" text-anchor="middle" class="gauge-inner-value">63%</text>
+              </svg>
+            </div>
+            <div class="gauge-band" id="labourTargetBand">Target Achievement</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leaderboard + metric rankings + insights -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Leaderboard &amp; Insights</div>
+            <div class="section-subtitle">
+              Ranked by Labour Sales, then KPIs
+            </div>
+          </div>
+          <button class="insights-button" id="insightsButton">
+            <span class="icon">💡</span>
+            <span>Insights</span>
+          </button>
+        </div>
+
+        <div class="insights-layout">
+          <table class="rank-table" id="rankTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Technician</th>
+                <th>Labour Sales</th>
+                <th>Prod %</th>
+                <th>Eff %</th>
+                <th>Charge Eff %</th>
+              </tr>
+            </thead>
+            <tbody><tr><td><span class="badge badge--top">1</span><span class="badge-emoji">🏆⭐</span></td><td>Alan Grossman</td><td>$21,797</td><td>100%</td><td>129%</td><td>128%</td></tr><tr><td><span class="badge">2</span></td><td>San Croos</td><td>$21,541</td><td>100%</td><td>127%</td><td>127%</td></tr><tr><td><span class="badge">3</span></td><td>Rebekka Walker</td><td>$21,346</td><td>98%</td><td>137%</td><td>136%</td></tr><tr><td><span class="badge">4</span></td><td>Ruchira Kankanamalage</td><td>$19,584</td><td>100%</td><td>134%</td><td>122%</td></tr><tr><td><span class="badge">5</span></td><td>Thomas Nooteboom</td><td>$17,357</td><td>100%</td><td>107%</td><td>109%</td></tr><tr><td><span class="badge">6</span></td><td>Alexander Lee</td><td>$17,189</td><td>95%</td><td>108%</td><td>102%</td></tr><tr><td><span class="badge">7</span></td><td>Marley Gayle</td><td>$14,945</td><td>102%</td><td>100%</td><td>98%</td></tr><tr><td><span class="badge">8</span></td><td>Aaron Lewis</td><td>$12,563</td><td>100%</td><td>77%</td><td>98%</td></tr><tr><td><span class="badge">9</span></td><td>Nipun Vidanage</td><td>$12,485</td><td>100%</td><td>101%</td><td>81%</td></tr><tr><td><span class="badge">10</span></td><td>Peter Tryfonos</td><td>$11,811</td><td>100%</td><td>88%</td><td>71%</td></tr><tr><td><span class="badge">11</span></td><td>Alex Hui</td><td>$11,447</td><td>94%</td><td>86%</td><td>78%</td></tr><tr><td><span class="badge">12</span></td><td>Stephen Thompson</td><td>$10,142</td><td>100%</td><td>86%</td><td>73%</td></tr><tr><td><span class="badge">13</span></td><td>Nixon Frasco</td><td>$9,733</td><td>98%</td><td>89%</td><td>85%</td></tr><tr><td><span class="badge">14</span></td><td>Jason Yu</td><td>$8,668</td><td>100%</td><td>92%</td><td>92%</td></tr><tr><td><span class="badge">15</span></td><td>Jasper Menzi</td><td>$8,581</td><td>101%</td><td>104%</td><td>96%</td></tr><tr><td><span class="badge">16</span></td><td>Suraj</td><td>$8,470</td><td>109%</td><td>114%</td><td>81%</td></tr><tr><td><span class="badge">17</span></td><td>Kon Loudovaris</td><td>$6,048</td><td>100%</td><td>68%</td><td>55%</td></tr><tr><td><span class="badge">18</span></td><td>Liam Wilkins-kaighin</td><td>$3,093</td><td>99%</td><td>77%</td><td>64%</td></tr><tr class="row-bottom"><td><span class="badge">19</span><span class="badge-emoji">🔻</span></td><td>Nicolas Pritchard</td><td>$2,688</td><td>100%</td><td>73%</td><td>62%</td></tr></tbody>
+          </table>
+
+          <div class="metrics-card">
+            <div class="card-title" style="margin-bottom:4px;">Metric Leaders</div>
+            <div class="section-subtitle">
+              Who leads each KPI (workshop view)
+            </div>
+            <table class="rank-table" id="metricRankTable">
+              <thead>
+                <tr>
+                  <th>Metric</th>
+                  <th>Best Tech</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody><tr><td>Productivity %</td><td>Suraj</td><td>109%</td></tr><tr><td>Efficiency %</td><td>Rebekka Walker</td><td>137%</td></tr><tr><td>Charge Eff %</td><td>Rebekka Walker</td><td>136%</td></tr><tr><td>Labour Sales</td><td>Alan Grossman</td><td>$21,797</td></tr><tr><td>Clock Accuracy %</td><td>Suraj</td><td>154%</td></tr><tr><td>Load Balance</td><td>Aaron Lewis</td><td>1.4h from perfect</td></tr><tr><td>Unapplied Hours</td><td>Suraj</td><td>-7.57 h</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- Bottom controls -->
+    <section class="controls card">
+      <div class="control-group">
+        <label for="csvInput">1. Upload Technician CSV (manual mode)</label>
+        <input id="csvInput" type="file" accept=".csv">
+        <div class="hint">
+          Expected columns from DMS export:<br>
+          <strong>Hours, Service, Tech, Charged, Clocked, Clocked (Acct), Worked, Labour Sales, Unapplied, Productivity, Efficiency, Charge Eff</strong><br>
+          Productivity / Efficiency / Charge Eff should be decimal multipliers (e.g. 0.98, 1.23).
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>2. Live data (provision for OneDrive)</label>
+        <div class="hint">
+          This dashboard is ready to pull from a live CSV stored in OneDrive.<br>
+          Once you have the direct CSV link, we’ll plug it into the <code>LIVE_CSV_URL</code> variable in the script.
+        </div>
+      </div>
+
+      <div class="pill">
+        <span class="pill-dot"></span>
+        GitHub hosted • Manual now • Live-ready later
+      </div>
+    </section>
+  </div>
+
+  <!-- Insights modal -->
+  <div class="modal-overlay" id="insightsOverlay">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title" id="insightsTitle">Performance Insights</div>
+        <button class="modal-close" data-close-insights="">×</button>
+      </div>
+      <div class="modal-body" id="insightsBody">
+        Select a technician and click Insights to view recommendations.
+      </div>
+    </div>
+  </div>
+
+  <!-- Ultimate ranking modal -->
+  <div class="modal-overlay" id="ultimateOverlay">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">Ultimate Technician Ranking</div>
+        <button class="modal-close" data-close-ultimate="">×</button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Combined score across <strong>Productivity, Efficiency, Charge Eff, Labour Sales, Clock Accuracy, Load Balance, Unapplied Hours</strong>.
+        </p>
+        <table class="ultimate-table" id="ultimateTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Technician</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody><tr><td><span class="ultimate-badge ultimate-badge--top">1</span><span class="badge-emoji">🏆⭐</span></td><td>Rebekka Walker</td><td>107.6</td></tr><tr><td><span class="ultimate-badge">2</span></td><td>Alan Grossman</td><td>106.8</td></tr><tr><td><span class="ultimate-badge">3</span></td><td>Ruchira Kankanamalage</td><td>106.5</td></tr><tr><td><span class="ultimate-badge">4</span></td><td>San Croos</td><td>106.2</td></tr><tr><td><span class="ultimate-badge">5</span></td><td>Thomas Nooteboom</td><td>97.7</td></tr><tr><td><span class="ultimate-badge">6</span></td><td>Alexander Lee</td><td>94.5</td></tr><tr><td><span class="ultimate-badge">7</span></td><td>Marley Gayle</td><td>94.4</td></tr><tr><td><span class="ultimate-badge">8</span></td><td>Suraj</td><td>91.2</td></tr><tr><td><span class="ultimate-badge">9</span></td><td>Jasper Menzi</td><td>88.7</td></tr><tr><td><span class="ultimate-badge">10</span></td><td>Nipun Vidanage</td><td>88.2</td></tr><tr><td><span class="ultimate-badge">11</span></td><td>Jason Yu</td><td>84.1</td></tr><tr><td><span class="ultimate-badge">12</span></td><td>Aaron Lewis</td><td>83.5</td></tr><tr><td><span class="ultimate-badge">13</span></td><td>Peter Tryfonos</td><td>82.0</td></tr><tr><td><span class="ultimate-badge">14</span></td><td>Nixon Frasco</td><td>81.8</td></tr><tr><td><span class="ultimate-badge">15</span></td><td>Stephen Thompson</td><td>80.1</td></tr><tr><td><span class="ultimate-badge">16</span></td><td>Alex Hui</td><td>78.5</td></tr><tr><td><span class="ultimate-badge">17</span></td><td>Liam Wilkins-kaighin</td><td>71.0</td></tr><tr><td><span class="ultimate-badge">18</span></td><td>Nicolas Pritchard</td><td>69.5</td></tr><tr class="row-bottom"><td><span class="ultimate-badge">19</span><span class="badge-emoji">🔻</span></td><td>Kon Loudovaris</td><td>68.2</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="settingsOverlay">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <div class="modal-title">Settings – Labour Target</div>
+        <button class="modal-close" data-close-settings="">×</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Labour Sales Target</strong></p>
+        <input id="labourTargetInput" type="number" min="0" step="1000">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+          <button id="settingsSave" class="btn-small">
+            <span class="icon">💾</span><span>Save</span>
+          </button>
+          <button id="settingsReset" class="btn-small">
+            <span class="icon">↩</span><span>Reset to $380,000</span>
+          </button>
+        </div>
+        <p class="hint" style="margin-top:10px;">
+          This target drives the Labour Sales gauges for the workshop and each technician. It’s stored locally in your browser so you can tweak it without touching the file.
+        </p>
+      </div>
+    </div>
+  </div>
+  <script>
+    // === LIVE DATA PROVISION ===
+    // When ready, paste your OneDrive direct CSV link here:
+    const LIVE_CSV_URL = ""; // e.g. "https://your-onedrive-link/technician_performance.csv"
+
+    // === CSV HEADER MAP ===
+    const HEADER_MAP = {
+      tech: "Tech",
+      hours: "Hours",
+      service: "Service",
+      charged: "Charged",
+      clocked: "Clocked",
+      clockedAcct: "Clocked (Acct)",
+      worked: "Worked",
+      labourSales: "Labour Sales",
+      unapplied: "Unapplied",
+      productivity: "Productivity",
+      efficiency: "Efficiency",
+      chargeEff: "Charge Eff"
+    };
+
+    let technicians = [];
+    let workshopTotal = null;
+    let labourTarget =
+      parseFloat(localStorage.getItem("bbk-tech-labour-target")) || 380000;
+
+    // DOM refs
+    const csvInput = document.getElementById("csvInput");
+    const techSelect = document.getElementById("techSelect");
+    const viewLabel = document.getElementById("viewLabel");
+
+    const GAUGE_RADIUS = 40;
+    const GAUGE_CIRC = 2 * Math.PI * GAUGE_RADIUS;
+
+    const gaugeElems = {
+      Productivity: {
+        fill: document.getElementById("gaugeProdFill"),
+        value: document.getElementById("innerValProductivity")
+      },
+      Efficiency: {
+        fill: document.getElementById("gaugeEffFill"),
+        value: document.getElementById("innerValEfficiency")
+      },
+      ChargeEff: {
+        fill: document.getElementById("gaugeChargeFill"),
+        value: document.getElementById("innerValCharging")
+      }
+    };
+
+    const labourGaugeElems = {
+      total: {
+        fill: document.getElementById("gaugeLabourTotalFill"),
+        value: document.getElementById("innerValLabourTotal"),
+        band: document.getElementById("labourTotalBand")
+      },
+      target: {
+        fill: document.getElementById("gaugeLabourTargetFill"),
+        value: document.getElementById("innerValLabourTarget"),
+        band: document.getElementById("labourTargetBand")
+      }
+    };
+
+    const tileLoad = document.getElementById("tileLoad");
+    const tileClock = document.getElementById("tileClock");
+    const tileConsistency = document.getElementById("tileConsistency");
+    const rankTableBody = document
+      .getElementById("rankTable")
+      .querySelector("tbody");
+    const metricRankTableBody = document
+      .getElementById("metricRankTable")
+      .querySelector("tbody");
+
+    const insightsButton = document.getElementById("insightsButton");
+    const insightsOverlay = document.getElementById("insightsOverlay");
+    const insightsBody = document.getElementById("insightsBody");
+    const insightsTitle = document.getElementById("insightsTitle");
+
+    const ultimateButton = document.getElementById("ultimateButton");
+    const ultimateOverlay = document.getElementById("ultimateOverlay");
+    const ultimateTableBody = document
+      .getElementById("ultimateTable")
+      .querySelector("tbody");
+
+    const settingsButton = document.getElementById("settingsButton");
+    const settingsOverlay = document.getElementById("settingsOverlay");
+    const labourTargetInput = document.getElementById("labourTargetInput");
+    const settingsSave = document.getElementById("settingsSave");
+    const settingsReset = document.getElementById("settingsReset");
+
+    const themeToggle = document.getElementById("themeToggle");
+    const snapshotButton = document.getElementById("snapshotButton");
+
+    // === EVENT HOOKS ===
+    csvInput.addEventListener("change", handleCSVUpload);
+    techSelect.addEventListener("change", handleTechChange);
+
+    insightsButton.addEventListener("click", () => {
+      showInsights();
+      openOverlay(insightsOverlay);
+    });
+
+    ultimateButton.addEventListener("click", () => {
+      buildUltimateRanking();
+      openOverlay(ultimateOverlay);
+    });
+
+    settingsButton.addEventListener("click", () => {
+      labourTargetInput.value = labourTarget.toFixed(0);
+      openOverlay(settingsOverlay);
+    });
+
+    document
+      .querySelectorAll("[data-close-insights]")
+      .forEach(btn =>
+        btn.addEventListener("click", () => closeOverlay(insightsOverlay))
+      );
+
+    document
+      .querySelectorAll("[data-close-ultimate]")
+      .forEach(btn =>
+        btn.addEventListener("click", () => closeOverlay(ultimateOverlay))
+      );
+
+    document
+      .querySelectorAll("[data-close-settings]")
+      .forEach(btn =>
+        btn.addEventListener("click", () => closeOverlay(settingsOverlay))
+      );
+
+    [insightsOverlay, ultimateOverlay, settingsOverlay].forEach(overlay => {
+      overlay.addEventListener("click", e => {
+        if (e.target === overlay) {
+          overlay.classList.remove("active");
+        }
+      });
+    });
+
+    settingsSave.addEventListener("click", () => {
+      const val = parseFloat(labourTargetInput.value);
+      if (!isFinite(val) || val <= 0) {
+        alert("Please enter a valid positive labour target.");
+        return;
+      }
+      labourTarget = val;
+      localStorage.setItem("bbk-tech-labour-target", labourTarget.toString());
+      if (workshopTotal) {
+        updateDashboardForView(techSelect.value || "__TOTAL__");
+      }
+      closeOverlay(settingsOverlay);
+    });
+
+    settingsReset.addEventListener("click", () => {
+      labourTarget = 380000;
+      localStorage.setItem("bbk-tech-labour-target", labourTarget.toString());
+      labourTargetInput.value = labourTarget.toFixed(0);
+      if (workshopTotal) {
+        updateDashboardForView(techSelect.value || "__TOTAL__");
+      }
+    });
+
+    // Theme init
+    const savedTheme = localStorage.getItem("bbk-tech-theme");
+    if (savedTheme === "light") {
+      document.body.classList.add("light");
+      updateThemeToggleText();
+    }
+
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      const mode = document.body.classList.contains("light") ? "light" : "dark";
+      localStorage.setItem("bbk-tech-theme", mode);
+      updateThemeToggleText();
+    });
+
+    snapshotButton.addEventListener("click", saveSnapshot);
+
+    function updateThemeToggleText() {
+      const isLight = document.body.classList.contains("light");
+      const icon = themeToggle.querySelector(".icon");
+      const text = themeToggle.querySelector("span:last-child");
+      if (isLight) {
+        icon.textContent = "☀️";
+        text.textContent = "Light mode";
+      } else {
+        icon.textContent = "🌙";
+        text.textContent = "Dark mode";
+      }
+    }
+
+    // Init gauge strokes (180° visible band)
+    function initGauges() {
+      Object.values(gaugeElems).forEach(cfg => {
+        cfg.fill.style.strokeDasharray = GAUGE_CIRC + " " + GAUGE_CIRC;
+        cfg.fill.style.strokeDashoffset = GAUGE_CIRC;
+      });
+      Object.values(labourGaugeElems).forEach(cfg => {
+        cfg.fill.style.strokeDasharray = GAUGE_CIRC + " " + GAUGE_CIRC;
+        cfg.fill.style.strokeDashoffset = GAUGE_CIRC;
+      });
+    }
+    initGauges();
+
+    // If LIVE_CSV_URL is set later, this will make it live without changing anything else
+    if (LIVE_CSV_URL) {
+      fetchLiveCSV();
+    }
+
+    // === LIVE FETCH (provision) ===
+    function fetchLiveCSV() {
+      fetch(LIVE_CSV_URL)
+        .then(res => {
+          if (!res.ok) throw new Error("Live CSV HTTP " + res.status);
+          return res.text();
+        })
+        .then(text => {
+          technicians = [];
+          workshopTotal = null;
+          parseTechnicianCSV(text);
+          if (!technicians.length && !workshopTotal) {
+            console.warn("Live CSV had no valid rows");
+            return;
+          }
+          if (!workshopTotal) {
+            workshopTotal = computeWorkshopTotalFromTechs(technicians);
+          }
+          populateTechSelect(technicians, workshopTotal);
+          populateLeaderboard(technicians);
+          populateMetricRankings(technicians);
+          techSelect.disabled = false;
+          techSelect.value = "__TOTAL__";
+          updateDashboardForView("__TOTAL__");
+        })
+        .catch(err => {
+          console.error("Failed to load live CSV:", err);
+        });
+    }
+
+    // === MANUAL CSV HANDLING ===
+    function handleCSVUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        const text = e.target.result;
+        technicians = [];
+        workshopTotal = null;
+        parseTechnicianCSV(text);
+
+        if (!technicians.length && !workshopTotal) {
+          alert(
+            "No valid technician rows found. Check your CSV headings and content."
+          );
+          return;
+        }
+
+        if (!workshopTotal) {
+          workshopTotal = computeWorkshopTotalFromTechs(technicians);
+        }
+
+        populateTechSelect(technicians);
+        populateLeaderboard(technicians);
+        populateMetricRankings(technicians);
+
+        techSelect.disabled = false;
+        techSelect.value = "__TOTAL__";
+        updateDashboardForView("__TOTAL__");
+      };
+      reader.readAsText(file);
+    }
+    function parseTechnicianCSV(text) {
+      const lines = text
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+      if (lines.length < 2) return;
+
+      const headerRow = lines[0]
+        .split(",")
+        .map(h => h.trim().replace(/^"|"$/g, ""));
+
+      const indexOf = headerName =>
+        headerRow.findIndex(h => h.toLowerCase() === headerName.toLowerCase());
+
+      const idxHours = indexOf(HEADER_MAP.hours);
+      const idxService = indexOf(HEADER_MAP.service);
+      const idxTech = indexOf(HEADER_MAP.tech);
+      const idxCharged = indexOf(HEADER_MAP.charged);
+      const idxClocked = indexOf(HEADER_MAP.clocked);
+      const idxClockedAcc = indexOf(HEADER_MAP.clockedAcct);
+      const idxWorked = indexOf(HEADER_MAP.worked);
+      const idxLabSales = indexOf(HEADER_MAP.labourSales);
+      const idxUnapplied = indexOf(HEADER_MAP.unapplied);
+      const idxProd = indexOf(HEADER_MAP.productivity);
+      const idxEff = indexOf(HEADER_MAP.efficiency);
+      const idxChgEff = indexOf(HEADER_MAP.chargeEff);
+
+      const missing = [];
+      if (idxTech === -1) missing.push(HEADER_MAP.tech);
+      if (idxCharged === -1) missing.push(HEADER_MAP.charged);
+      if (idxClocked === -1) missing.push(HEADER_MAP.clocked);
+      if (idxClockedAcc === -1) missing.push(HEADER_MAP.clockedAcct);
+      if (idxWorked === -1) missing.push(HEADER_MAP.worked);
+      if (idxLabSales === -1) missing.push(HEADER_MAP.labourSales);
+      if (idxUnapplied === -1) missing.push(HEADER_MAP.unapplied);
+      if (idxProd === -1) missing.push(HEADER_MAP.productivity);
+      if (idxEff === -1) missing.push(HEADER_MAP.efficiency);
+      if (idxChgEff === -1) missing.push(HEADER_MAP.chargeEff);
+
+      if (missing.length) {
+        alert(
+          "Missing expected CSV headings: " +
+            missing.join(", ") +
+            "\nIf your export uses different labels, tweak HEADER_MAP in the script."
+        );
+      }
+
+      let totalsCandidate = null;
+
+      for (let i = 1; i < lines.length; i++) {
+        const row = splitCSVLine(lines[i]);
+        if (!row.length) continue;
+
+        const hoursVal = idxHours >= 0 ? (row[idxHours] || "").trim() : "";
+        const techNameRaw = idxTech >= 0 ? (row[idxTech] || "").trim() : "";
+
+        // Detect totals row via Hours == "Total"
+        if (hoursVal.toLowerCase() === "total") {
+          const charged = safeNumber(idxCharged >= 0 ? row[idxCharged] : "");
+          const clocked = safeNumber(idxClocked >= 0 ? row[idxClocked] : "");
+          const clockedAcc = safeNumber(
+            idxClockedAcc >= 0 ? row[idxClockedAcc] : ""
+          );
+          const worked = safeNumber(idxWorked >= 0 ? row[idxWorked] : "");
+          const labSales = safeNumber(idxLabSales >= 0 ? row[idxLabSales] : "");
+          const unapplied = safeNumber(idxUnapplied >= 0 ? row[idxUnapplied] : "");
+          const prodMult = safeNumber(idxProd >= 0 ? row[idxProd] : "");
+          const effMult = safeNumber(idxEff >= 0 ? row[idxEff] : "");
+          const chgEffMult = safeNumber(idxChgEff >= 0 ? row[idxChgEff] : "");
+          totalsCandidate = {
+            name: "Workshop Total",
+            chargedHours: charged,
+            clockedHours: clocked,
+            clockedAcctHours: clockedAcc,
+            workedHours: worked,
+            labourSales: labSales,
+            unappliedHours: unapplied,
+            productivityPct: prodMult * 100,
+            efficiencyPct: effMult * 100,
+            chargeEffPct: chgEffMult * 100
+          };
+          continue;
+        }
+
+        const techName = techNameRaw;
+        if (!techName || techName.toLowerCase() === "total") continue;
+
+        const charged = safeNumber(idxCharged >= 0 ? row[idxCharged] : "");
+        const clocked = safeNumber(idxClocked >= 0 ? row[idxClocked] : "");
+        const clockedAcc = safeNumber(
+          idxClockedAcc >= 0 ? row[idxClockedAcc] : ""
+        );
+        const worked = safeNumber(idxWorked >= 0 ? row[idxWorked] : "");
+        const labSales = safeNumber(idxLabSales >= 0 ? row[idxLabSales] : "");
+        const unapplied = safeNumber(idxUnapplied >= 0 ? row[idxUnapplied] : "");
+        const prodMult = safeNumber(idxProd >= 0 ? row[idxProd] : "");
+        const effMult = safeNumber(idxEff >= 0 ? row[idxEff] : "");
+        const chgEffMult = safeNumber(idxChgEff >= 0 ? row[idxChgEff] : "");
+
+        technicians.push({
+          name: techName,
+          chargedHours: charged,
+          clockedHours: clocked,
+          clockedAcctHours: clockedAcc,
+          workedHours: worked,
+          labourSales: labSales,
+          unappliedHours: unapplied,
+          productivityPct: prodMult * 100,
+          efficiencyPct: effMult * 100,
+          chargeEffPct: chgEffMult * 100
+        });
+      }
+
+      if (totalsCandidate) {
+        workshopTotal = totalsCandidate;
+      }
+    }
+
+    function splitCSVLine(line) {
+      return line.split(",").map(v => v.replace(/^"|"$/g, ""));
+    }
+
+    function safeNumber(value) {
+      if (value == null) return 0;
+      const cleaned = String(value).replace(/[,%$]/g, "").trim();
+      const num = parseFloat(cleaned);
+      return isNaN(num) ? 0 : num;
+    }
+
+    function computeWorkshopTotalFromTechs(list) {
+      if (!list.length) return null;
+      let charged = 0,
+        clocked = 0,
+        clockedAcc = 0,
+        worked = 0,
+        lab = 0,
+        unapplied = 0;
+      list.forEach(t => {
+        charged += t.chargedHours || 0;
+        clocked += t.clockedHours || 0;
+        clockedAcc += t.clockedAcctHours || 0;
+        worked += t.workedHours || 0;
+        lab += t.labourSales || 0;
+        unapplied += t.unappliedHours || 0;
+      });
+      const avgProd = average(list.map(t => t.productivityPct));
+      const avgEff = average(list.map(t => t.efficiencyPct));
+      const avgCharge = average(list.map(t => t.chargeEffPct));
+      return {
+        name: "Workshop Total",
+        chargedHours: charged,
+        clockedHours: clocked,
+        clockedAcctHours: clockedAcc,
+        workedHours: worked,
+        labourSales: lab,
+        unappliedHours: unapplied,
+        productivityPct: avgProd,
+        efficiencyPct: avgEff,
+        chargeEffPct: avgCharge
+      };
+    }
+
+    function average(arr) {
+      const nums = arr.filter(v => typeof v === "number" && isFinite(v));
+      if (!nums.length) return 0;
+      return nums.reduce((a, b) => a + b, 0) / nums.length;
+    }
+
+    function populateTechSelect(list) {
+      techSelect.innerHTML = "";
+      const totalOption = document.createElement("option");
+      totalOption.value = "__TOTAL__";
+      totalOption.textContent = "Workshop Total (All Techs)";
+      techSelect.appendChild(totalOption);
+
+      list.forEach(t => {
+        const opt = document.createElement("option");
+        opt.value = t.name;
+        opt.textContent = t.name;
+        techSelect.appendChild(opt);
+      });
+    }
+
+    function populateLeaderboard(list) {
+      const sorted = [...list].sort((a, b) => {
+        if (b.labourSales !== a.labourSales) return b.labourSales - a.labourSales;
+        if (b.productivityPct !== a.productivityPct)
+          return b.productivityPct - a.productivityPct;
+        if (b.efficiencyPct !== a.efficiencyPct)
+          return b.efficiencyPct - a.efficiencyPct;
+        return b.chargeEffPct - a.chargeEffPct;
+      });
+
+      rankTableBody.innerHTML = "";
+      if (!sorted.length) return;
+
+      const topLabour = Math.max(...sorted.map(t => t.labourSales));
+      const n = sorted.length;
+      const topCount = Math.max(1, Math.round(n * 0.05));
+      const bottomCount = Math.max(1, Math.round(n * 0.05));
+
+      sorted.forEach((t, index) => {
+        const tr = document.createElement("tr");
+
+        const isTop = index < topCount;
+        const isBottom = index >= n - bottomCount;
+
+        const rankTd = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = "badge";
+        badge.textContent = index + 1;
+        if (t.labourSales === topLabour && topLabour > 0) {
+          badge.classList.add("badge--top");
+        }
+
+        rankTd.appendChild(badge);
+
+        const emojiSpan = document.createElement("span");
+        emojiSpan.className = "badge-emoji";
+        if (isTop) {
+          emojiSpan.textContent = index === 0 ? "🏆⭐" : "⭐";
+        }
+        if (isBottom) {
+          emojiSpan.textContent = "🔻";
+          tr.classList.add("row-bottom");
+        }
+        if (emojiSpan.textContent) {
+          rankTd.appendChild(emojiSpan);
+        }
+
+        tr.appendChild(rankTd);
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = t.name;
+        tr.appendChild(nameTd);
+
+        const labourTd = document.createElement("td");
+        labourTd.textContent = formatCurrency(t.labourSales);
+        tr.appendChild(labourTd);
+
+        const prodTd = document.createElement("td");
+        prodTd.textContent = formatPercent(t.productivityPct);
+        tr.appendChild(prodTd);
+
+        const effTd = document.createElement("td");
+        effTd.textContent = formatPercent(t.efficiencyPct);
+        tr.appendChild(effTd);
+
+        const chgTd = document.createElement("td");
+        chgTd.textContent = formatPercent(t.chargeEffPct);
+        tr.appendChild(chgTd);
+
+        rankTableBody.appendChild(tr);
+      });
+    }
+
+    function populateMetricRankings(list) {
+      metricRankTableBody.innerHTML = "";
+      if (!list.length) return;
+
+      const metrics = [];
+
+      const bestProd = [...list].sort(
+        (a, b) => (b.productivityPct || 0) - (a.productivityPct || 0)
+      )[0];
+      if (bestProd && isFinite(bestProd.productivityPct)) {
+        metrics.push({
+          label: "Productivity %",
+          tech: bestProd.name,
+          value: formatPercent(bestProd.productivityPct)
+        });
+      }
+
+      const bestEff = [...list].sort(
+        (a, b) => (b.efficiencyPct || 0) - (a.efficiencyPct || 0)
+      )[0];
+      if (bestEff && isFinite(bestEff.efficiencyPct)) {
+        metrics.push({
+          label: "Efficiency %",
+          tech: bestEff.name,
+          value: formatPercent(bestEff.efficiencyPct)
+        });
+      }
+
+      const bestCharge = [...list].sort(
+        (a, b) => (b.chargeEffPct || 0) - (a.chargeEffPct || 0)
+      )[0];
+      if (bestCharge && isFinite(bestCharge.chargeEffPct)) {
+        metrics.push({
+          label: "Charge Eff %",
+          tech: bestCharge.name,
+          value: formatPercent(bestCharge.chargeEffPct)
+        });
+      }
+
+      const bestLab = [...list].sort(
+        (a, b) => (b.labourSales || 0) - (a.labourSales || 0)
+      )[0];
+      if (bestLab && isFinite(bestLab.labourSales)) {
+        metrics.push({
+          label: "Labour Sales",
+          tech: bestLab.name,
+          value: formatCurrency(bestLab.labourSales)
+        });
+      }
+
+      const byClock = [...list].map(t => {
+        const ratio =
+          t.clockedAcctHours > 0
+            ? (t.clockedHours / t.clockedAcctHours) * 100
+            : 0;
+        return { ...t, clockAccuracy: ratio };
+      });
+      const bestClock = byClock.sort(
+        (a, b) => (b.clockAccuracy || 0) - (a.clockAccuracy || 0)
+      )[0];
+      if (bestClock && isFinite(bestClock.clockAccuracy)) {
+        metrics.push({
+          label: "Clock Accuracy %",
+          tech: bestClock.name,
+          value: formatPercent(bestClock.clockAccuracy)
+        });
+      }
+
+      const byLoad = [...list].map(t => {
+        const diff = (t.chargedHours || 0) - (t.workedHours || 0);
+        return { ...t, loadDiff: Math.abs(diff) };
+      });
+      const bestLoad = byLoad.sort(
+        (a, b) => (a.loadDiff || 0) - (b.loadDiff || 0)
+      )[0];
+      if (bestLoad && isFinite(bestLoad.loadDiff)) {
+        const diffTxt = bestLoad.loadDiff.toFixed(1) + "h from perfect";
+        metrics.push({
+          label: "Load Balance",
+          tech: bestLoad.name,
+          value: diffTxt
+        });
+      }
+
+      const bestUnapplied = [...list].sort(
+        (a, b) => (a.unappliedHours || 0) - (b.unappliedHours || 0)
+      )[0];
+      if (bestUnapplied && isFinite(bestUnapplied.unappliedHours)) {
+        metrics.push({
+          label: "Unapplied Hours",
+          tech: bestUnapplied.name,
+          value: bestUnapplied.unappliedHours.toFixed(2) + " h"
+        });
+      }
+
+      metrics.forEach(m => {
+        const tr = document.createElement("tr");
+        const tdMetric = document.createElement("td");
+        tdMetric.textContent = m.label;
+        tr.appendChild(tdMetric);
+
+        const tdTech = document.createElement("td");
+        tdTech.textContent = m.tech;
+        tr.appendChild(tdTech);
+
+        const tdVal = document.createElement("td");
+        tdVal.textContent = m.value;
+        tr.appendChild(tdVal);
+
+        metricRankTableBody.appendChild(tr);
+      });
+    }
+
+    function formatPercent(value) {
+      if (!isFinite(value)) return "–";
+      return value.toFixed(0) + "%";
+    }
+
+    function formatCurrency(value) {
+      if (!isFinite(value)) return "–";
+      return "$" + value.toLocaleString(undefined, { maximumFractionDigits: 0 });
+    }
+
+    function handleTechChange() {
+      const value = techSelect.value;
+      if (!value) return;
+      updateDashboardForView(value);
+    }
+
+    function updateDashboardForView(value) {
+      let target;
+      if (value === "__TOTAL__") {
+        target = workshopTotal;
+        viewLabel.textContent = "Workshop Total – All Technicians";
+      } else {
+        target = technicians.find(t => t.name === value);
+        viewLabel.textContent = value;
+      }
+      if (!target) return;
+
+      updateGauge("Productivity", target.productivityPct);
+      updateGauge("Efficiency", target.efficiencyPct);
+      updateGauge("ChargeEff", target.chargeEffPct);
+      updateInfoTiles(target);
+      updateConsistencyTile(target);
+      updateLabourGauges(target, value === "__TOTAL__");
+    }
+
+    // KPI gauges (0–100 visible on semicircle, >100 = full + green)
+    function updateGauge(type, value) {
+      const cfg = gaugeElems[type];
+      if (!cfg) return;
+
+      let pct = isFinite(value) ? value : 0;
+      const capped = Math.min(Math.max(pct, 0), 100);
+      const fraction = (capped / 100) * 0.5; // half of full circle = 100%
+      const offset = GAUGE_CIRC * (1 - fraction);
+
+      cfg.fill.style.strokeDashoffset = offset;
+      cfg.value.textContent = isFinite(value) ? formatPercent(value) : "– %";
+
+      cfg.fill.classList.remove(
+        "gauge-fill--red",
+        "gauge-fill--yellow",
+        "gauge-fill--green"
+      );
+      if (!isFinite(value)) {
+        cfg.fill.classList.add("gauge-fill--yellow");
+      } else if (pct < 70) {
+        cfg.fill.classList.add("gauge-fill--red");
+      } else if (pct <= 100) {
+        cfg.fill.classList.add("gauge-fill--yellow");
+      } else {
+        cfg.fill.classList.add("gauge-fill--green");
+      }
+    }
+
+    // Labour gauges (Total vs target, Tech vs target + contribution)
+    function updateLabourGauge(fillEl, valuePct, displayEl, displayText, bandEl, bandText) {
+      let pct = isFinite(valuePct) ? valuePct : 0;
+      const capped = Math.min(Math.max(pct, 0), 100);
+      const fraction = (capped / 100) * 0.5;
+      const offset = GAUGE_CIRC * (1 - fraction);
+
+      fillEl.style.strokeDashoffset = offset;
+
+      if (displayEl && displayText != null) {
+        displayEl.textContent = displayText;
+      }
+      if (bandEl && bandText != null) {
+        bandEl.textContent = bandText;
+      }
+
+      fillEl.classList.remove(
+        "gauge-fill--red",
+        "gauge-fill--yellow",
+        "gauge-fill--green"
+      );
+      if (!isFinite(valuePct)) {
+        fillEl.classList.add("gauge-fill--yellow");
+      } else if (pct < 70) {
+        fillEl.classList.add("gauge-fill--red");
+      } else if (pct <= 100) {
+        fillEl.classList.add("gauge-fill--yellow");
+      } else {
+        fillEl.classList.add("gauge-fill--green");
+      }
+    }
+
+    function updateLabourGauges(target, isTotalView) {
+      const totalCfg = labourGaugeElems.total;
+      const targetCfg = labourGaugeElems.target;
+
+      if (!workshopTotal) {
+        updateLabourGauge(
+          totalCfg.fill,
+          0,
+          totalCfg.value,
+          "$0",
+          totalCfg.band,
+          "Workshop vs Target"
+        );
+        updateLabourGauge(
+          targetCfg.fill,
+          0,
+          targetCfg.value,
+          "– %",
+          targetCfg.band,
+          "Target achievement / contribution"
+        );
+        return;
+      }
+
+      const totalLab = workshopTotal.labourSales || 0;
+      const labTarget = labourTarget > 0 ? labourTarget : totalLab || 1;
+
+      if (isTotalView) {
+        const pctToTarget = labTarget > 0 ? (totalLab / labTarget) * 100 : 0;
+        updateLabourGauge(
+          totalCfg.fill,
+          pctToTarget,
+          totalCfg.value,
+          formatCurrency(totalLab),
+          totalCfg.band,
+          "Workshop vs Target (" + formatPercent(pctToTarget) + ")"
+        );
+        updateLabourGauge(
+          targetCfg.fill,
+          pctToTarget,
+          targetCfg.value,
+          formatPercent(pctToTarget),
+          targetCfg.band,
+          "Target Achievement"
+        );
+      } else {
+        const techLab = target.labourSales || 0;
+        const pctTarget = labTarget > 0 ? (techLab / labTarget) * 100 : 0;
+        const pctContribution = totalLab > 0 ? (techLab / totalLab) * 100 : 0;
+
+        updateLabourGauge(
+          totalCfg.fill,
+          pctTarget,
+          totalCfg.value,
+          formatCurrency(techLab),
+          totalCfg.band,
+          "Individual vs Target (" + formatPercent(pctTarget) + ")"
+        );
+        updateLabourGauge(
+          targetCfg.fill,
+          pctContribution,
+          targetCfg.value,
+          formatPercent(pctContribution),
+          targetCfg.band,
+          "Share of Workshop Labour"
+        );
+      }
+    }
+
+    function setTileState(tile, colorClass) {
+      tile.className = "info-tile";
+      if (colorClass) tile.classList.add(colorClass);
+    }
+
+    function updateInfoTiles(tech) {
+      const charged = tech.chargedHours || 0;
+      const worked = tech.workedHours || 0;
+      const diff = charged - worked;
+
+      let loadMain = "No time recorded";
+      let loadSub = "No Charged or Worked hours found in this period.";
+      let loadColor = null;
+
+      if (charged > 0 || worked > 0) {
+        const chargedTxt = charged.toFixed(1) + " h";
+        const workedTxt = worked.toFixed(1) + " h";
+
+        if (Math.abs(diff) <= 3) {
+          loadMain = `Charged: ${chargedTxt} • Worked: ${workedTxt}`;
+          loadSub = "Load: Well balanced (within 3 hours).";
+          loadColor = "tile--green";
+        } else if (diff < -3) {
+          const missing = Math.abs(diff).toFixed(1) + " h";
+          loadMain = `Charged: ${chargedTxt} • Worked: ${workedTxt}`;
+          if (diff <= -10) {
+            loadSub = `Under-fed by ${missing}. Talk to the controller about more flagged hours.`;
+            loadColor = "tile--red";
+          } else {
+            loadSub = `Slightly under-fed by ${missing}. Ask for more work when free and minimise idle time.`;
+            loadColor = "tile--yellow";
+          }
+        } else {
+          const over = diff.toFixed(1) + " h";
+          loadMain = `Charged: ${chargedTxt} • Worked: ${workedTxt}`;
+          loadSub = `Over-loaded by ${over}. Watch quality and comeback risk; flag if workload is unmanageable.`;
+          loadColor = "tile--purple";
+        }
+      }
+
+      tileLoad.querySelector(".info-tile-main").textContent = loadMain;
+      tileLoad.querySelector(".info-tile-sub").textContent = loadSub;
+      setTileState(tileLoad, loadColor);
+
+      const clocked = tech.clockedHours || 0;
+      const clockedAcc = tech.clockedAcctHours || 0;
+
+      let clkMain = "No accounting time";
+      let clkSub = "Clocked (Acct) is zero; check export or RO configuration.";
+      let clkColor = null;
+
+      if (clockedAcc > 0) {
+        const ratio = (clocked / clockedAcc) * 100;
+        const leakage = Math.abs(100 - ratio);
+        clkMain = `Clocking Accuracy: ${ratio.toFixed(1)}%`;
+
+        if (ratio > 98) {
+          clkSub =
+            "Excellent. Workshop and accounting are aligned (leakage ~" +
+            leakage.toFixed(1) +
+            "%).";
+          clkColor = "tile--green";
+        } else if (ratio >= 90) {
+          clkSub =
+            "OK but tighten up. Approx. " +
+            leakage.toFixed(1) +
+            "% of time is not aligned with accounting.";
+          clkColor = "tile--yellow";
+        } else {
+          clkSub =
+            "High leakage (~" +
+            leakage.toFixed(1) +
+            "%). Review clock on/off habits and op-code usage.";
+          clkColor = "tile--red";
+        }
+      }
+
+      tileClock.querySelector(".info-tile-main").textContent = clkMain;
+      tileClock.querySelector(".info-tile-sub").textContent = clkSub;
+      setTileState(tileClock, clkColor);
+    }
+
+    function updateConsistencyTile(tech) {
+      const main = tileConsistency.querySelector(".info-tile-main");
+      const sub = tileConsistency.querySelector(".info-tile-sub");
+
+      const metrics = [];
+      if (isFinite(tech.productivityPct)) metrics.push(tech.productivityPct);
+      if (isFinite(tech.efficiencyPct)) metrics.push(tech.efficiencyPct);
+      if (isFinite(tech.chargeEffPct)) metrics.push(tech.chargeEffPct);
+
+      if (!metrics.length) {
+        main.textContent = "No KPI data yet";
+        sub.textContent =
+          "Once Productivity, Efficiency & Charge Eff are populated, consistency will be scored out of 100.";
+        setTileState(tileConsistency, null);
+        return;
+      }
+
+      const deviations = metrics.map(m => Math.abs(m - 100));
+      const avgDev =
+        deviations.reduce((a, b) => a + b, 0) / deviations.length;
+      let score = Math.max(0, 100 - avgDev);
+      score = Math.round(score);
+
+      let color = "tile--yellow";
+      let msg =
+        "Close to target overall. Keep fine-tuning process so all KPIs sit in the same band.";
+
+      if (score >= 85) {
+        color = "tile--green";
+        msg =
+          "Very stable performance. Productivity, Efficiency & Charge Eff are all hovering around target.";
+      } else if (score < 70) {
+        color = "tile--red";
+        msg =
+          "KPIs are pulling in different directions. Focus on one at a time (e.g. efficiency) instead of trying to fix everything at once.";
+      }
+
+      main.textContent = `Consistency Score: ${score}/100`;
+      sub.textContent = msg;
+      setTileState(tileConsistency, color);
+    }
+
+    // === INSIGHTS WITH SEVERITY BADGES & ACCORDION ===
+    function showInsights() {
+      const value = techSelect.value;
+      if (!value) {
+        insightsTitle.textContent = "Performance Insights";
+        insightsBody.innerHTML =
+          "<p>Upload your CSV and select a technician or Workshop Total first.</p>";
+        return;
+      }
+
+      let target;
+      if (value === "__TOTAL__") {
+        target = workshopTotal;
+        insightsTitle.textContent = "Performance Insights – Workshop Total";
+      } else {
+        target = technicians.find(t => t.name === value);
+        insightsTitle.textContent = "Performance Insights – " + value;
+      }
+      if (!target) return;
+
+      const sections = [];
+
+      const prod = target.productivityPct;
+      const eff = target.efficiencyPct;
+      const chgEff = target.chargeEffPct;
+      const labour = target.labourSales;
+      const charged = target.chargedHours || 0;
+      const worked = target.workedHours || 0;
+      const diff = charged - worked;
+      const clocked = target.clockedHours || 0;
+      const clockedAcc = target.clockedAcctHours || 0;
+      const unapplied = target.unappliedHours || 0;
+
+      const allLabour = technicians.map(t => t.labourSales);
+      const medianLabour = computeMedian(allLabour);
+
+      function addSection(icon, title, severity, messages) {
+        if (!messages || !messages.length) return;
+        sections.push({ icon, title, severity, messages });
+      }
+
+      // Productivity
+      if (isFinite(prod)) {
+        let msgs = [];
+        let severity = "info";
+
+        if (prod < 70) {
+          severity = "critical";
+          msgs.push(
+            "Productivity is in the red. Minimise gaps between jobs, prep your bay and tools before you clock on, and tell the controller as soon as you’re free so they can load the next RO."
+          );
+        } else if (prod < 100) {
+          severity = "watch";
+          msgs.push(
+            "Productivity is close to target. Focus on small delays – getting parts and information ready before you start, and avoiding long off-job chats while the bay is empty."
+          );
+        } else {
+          severity = "good";
+          msgs.push(
+            "Productivity is strong. You’re keeping yourself loaded with work – keep communicating early with advisors so there’s always a job ready."
+          );
+        }
+
+        addSection("⚙️", "Productivity", severity, msgs);
+      }
+
+      // Efficiency
+      if (isFinite(eff)) {
+        let msgs = [];
+        let severity = "info";
+
+        if (eff < 90) {
+          severity = "critical";
+          msgs.push(
+            "Efficiency can be tightened. Plan the job before turning a bolt: read the RO and history properly, check OEM times, and pre-pull common tools."
+          );
+          msgs.push(
+            "Work methodically instead of reacting as you go – that keeps you closer to, or ahead of, book time."
+          );
+        } else if (eff < 110) {
+          severity = "watch";
+          msgs.push(
+            "Efficiency is solid. To nudge it higher, standardise repeat jobs (services, brakes, tyres) with a consistent order of operations and bay setup."
+          );
+        } else {
+          severity = "good";
+          msgs.push(
+            "Efficiency is high. Protect quality with clear test drives and final checks so speed doesn’t turn into comebacks."
+          );
+        }
+
+        addSection("🚀", "Efficiency", severity, msgs);
+      }
+
+      // Charging efficiency
+      if (isFinite(chgEff)) {
+        let msgs = [];
+        let severity = "info";
+
+        if (chgEff < 90) {
+          severity = "critical";
+          msgs.push(
+            "Charging efficiency is leaking value. Make sure diagnosis time is coded correctly and op codes match the work actually done."
+          );
+          msgs.push(
+            "Let advisors know early if a job takes longer than book time so they can adjust the RO and talk to the customer."
+          );
+        } else if (chgEff < 105) {
+          severity = "watch";
+          msgs.push(
+            "Charging efficiency is okay. Check that small extras (bulbs, clips, adjustments) are captured and noted so advisors can bill them."
+          );
+        } else {
+          severity = "good";
+          msgs.push(
+            "Charging efficiency is great. You’re matching effort to billable time well – keep documenting clearly so advisors can confidently charge for it."
+          );
+        }
+
+        addSection("💳", "Charging Efficiency", severity, msgs);
+      }
+
+      // Labour Sales vs workshop
+      if (isFinite(labour) && technicians.length > 1) {
+        let msgs = [];
+        let severity = "info";
+
+        if (labour < medianLabour) {
+          severity = "watch";
+          msgs.push(
+            "Labour sales are below the workshop middle. Ask the controller for a stronger mix of work and make sure your inspections are detailed and well documented."
+          );
+          msgs.push(
+            "Good, honest inspection findings give advisors real items to present to customers, which lifts both sales and safety."
+          );
+        } else {
+          severity = "good";
+          msgs.push(
+            "Labour sales are at or above the workshop middle. Protect that by avoiding rework – one comeback can wipe out a lot of effort."
+          );
+          msgs.push(
+            "Take an extra minute on final checks and quality control, especially on safety-critical work."
+          );
+        }
+
+        addSection("📊", "Labour Sales", severity, msgs);
+      }
+
+      // Workload balance
+      if (charged > 0 || worked > 0) {
+        let msgs = [];
+        let severity = "info";
+
+        if (Math.abs(diff) <= 3) {
+          severity = "good";
+          msgs.push(
+            "Your workload is nicely balanced. Charged and worked hours are within about 3 hours of each other."
+          );
+          msgs.push(
+            "Keep communicating proactively with the controller so they can maintain this level of loading."
+          );
+        } else if (diff < -3) {
+          const missing = Math.abs(diff).toFixed(1) + " h";
+          severity = Math.abs(diff) >= 10 ? "critical" : "watch";
+          msgs.push(
+            `You appear under-fed on charged hours by around ${missing}. Talk to the controller about getting more flagged work.`
+          );
+          msgs.push(
+            "Make sure you’re clocked on whenever you’re working on an RO so effort isn’t lost."
+          );
+        } else if (diff > 3) {
+          const over = diff.toFixed(1) + " h";
+          severity = "watch";
+          msgs.push(
+            `You’re carrying a heavy load (about ${over} more charged than worked). Watch quality and fatigue levels.`
+          );
+          msgs.push(
+            "If workload becomes unsafe or risks comebacks, flag it with the controller early."
+          );
+        }
+
+        addSection("📦", "Workload (Charged vs Worked)", severity, msgs);
+      }
+
+      // Clocking accuracy
+      if (clockedAcc > 0) {
+        const ratio = (clocked / clockedAcc) * 100;
+        let msgs = [];
+        let severity = "info";
+
+        if (ratio > 98) {
+          severity = "good";
+          msgs.push(
+            `Clocking accuracy is excellent at around ${ratio.toFixed(1)}%. Workshop and accounting time are aligned.`
+          );
+          msgs.push(
+            "Keep the habit of clocking on/off in real time – it protects both you and the department KPIs."
+          );
+        } else if (ratio >= 90) {
+          severity = "watch";
+          msgs.push(
+            `Clocking accuracy is okay at about ${ratio.toFixed(1)}%, but there’s still leakage.`
+          );
+          msgs.push(
+            "Try to clock on as soon as you touch the car and clock off when it leaves your bay so the system reflects your real effort."
+          );
+        } else {
+          severity = "critical";
+          msgs.push(
+            `Clocking accuracy is a risk area (~${ratio.toFixed(1)}%). There are large gaps between workshop time and accounting time.`
+          );
+          msgs.push(
+            "Focus on consistent clocking and check you’re using the right op codes so time isn’t lost."
+          );
+        }
+
+        addSection("⏱", "Clocking Accuracy", severity, msgs);
+      }
+
+      // Unapplied hours
+      if (isFinite(unapplied) && unapplied > 0) {
+        let msgs = [];
+        let severity = "watch";
+
+        msgs.push(
+          `There are unapplied hours recorded (about ${unapplied.toFixed(
+            2
+          )} h). Review where time is being written off.`
+        );
+        msgs.push(
+          "Look for diagnosis not coded, goodwill jobs or internal work that could be captured better on future ROs."
+        );
+
+        addSection("🕳", "Unapplied Hours", severity, msgs);
+      }
+
+      // Consistency
+      const metrics = [];
+      if (isFinite(prod)) metrics.push(prod);
+      if (isFinite(eff)) metrics.push(eff);
+      if (isFinite(chgEff)) metrics.push(chgEff);
+      if (metrics.length) {
+        const deviations = metrics.map(m => Math.abs(m - 100));
+        const avgDev =
+          deviations.reduce((a, b) => a + b, 0) / deviations.length;
+        let score = Math.max(0, 100 - avgDev);
+        score = Math.round(score);
+
+        let msgs = [];
+        let severity = "watch";
+
+        if (score >= 85) {
+          severity = "good";
+          msgs.push(
+            `Consistency score is ${score}/100. Productivity, Efficiency and Charging Efficiency are all hovering around target.`
+          );
+          msgs.push(
+            "Keep following the same routine each day – process is clearly working."
+          );
+        } else if (score < 70) {
+          severity = "critical";
+          msgs.push(
+            `Consistency score is ${score}/100. KPIs are pulling in different directions.`
+          );
+          msgs.push(
+            "Pick one focus area (e.g. efficiency or charging) for the next few weeks instead of trying to fix everything at once."
+          );
+        } else {
+          severity = "watch";
+          msgs.push(
+            `Consistency score is ${score}/100. You’re close to target overall, with room to tighten one or two KPIs.`
+          );
+          msgs.push(
+            "Sit with your controller or manager and agree which KPI you want to move first."
+          );
+        }
+
+        addSection("📈", "Overall Consistency", severity, msgs);
+      }
+
+      if (!sections.length) {
+        insightsBody.innerHTML =
+          "<p>Data looks incomplete for this view. Check the CSV and try again.</p>";
+        return;
+      }
+
+      const html = sections
+        .map((sec, index) => buildInsightsSectionHTML(sec, index === 0))
+        .join("");
+
+      insightsBody.innerHTML = html;
+      wireInsightsAccordion();
+    }
+
+    function buildInsightsSectionHTML(sec, open) {
+      const severityLabel = {
+        critical: "Critical",
+        watch: "Needs attention",
+        good: "Good",
+        info: "Info"
+      }[sec.severity] || "Info";
+
+      const severityEmoji = {
+        critical: "🔴",
+        watch: "🟡",
+        good: "🟢",
+        info: "🔵"
+      }[sec.severity] || "🔵";
+
+      const badgeClass = sec.severity || "info";
+
+      return `
+        <div class="insights-section">
+          <button class="insights-section-header" type="button" data-insights-toggle>
+            <div class="insights-section-title">
+              <span class="icon">${sec.icon}</span>
+              <span>${sec.title}</span>
+            </div>
+            <div class="insights-badge ${badgeClass}">
+              <span>${severityEmoji}</span>
+              <span>${severityLabel}</span>
+            </div>
+          </button>
+          <div class="insights-section-body ${open ? "open" : ""}">
+            <ul>
+              ${sec.messages.map(m => `<li>${m}</li>`).join("")}
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function wireInsightsAccordion() {
+      insightsBody
+        .querySelectorAll("[data-insights-toggle]")
+        .forEach(btn => {
+          btn.addEventListener("click", () => {
+            const body = btn.nextElementSibling;
+            if (!body) return;
+            body.classList.toggle("open");
+          });
+        });
+    }
+    function computeMedian(arr) {
+      const nums = arr.filter(v => typeof v === "number" && isFinite(v));
+      if (!nums.length) return 0;
+      nums.sort((a, b) => a - b);
+      const mid = Math.floor(nums.length / 2);
+      if (nums.length % 2 === 0) {
+        return (nums[mid - 1] + nums[mid]) / 2;
+      }
+      return nums[mid];
+    }
+
+    function openOverlay(overlay) {
+      overlay.classList.add("active");
+    }
+
+    function closeOverlay(overlay) {
+      overlay.classList.remove("active");
+    }
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function buildUltimateRanking() {
+      ultimateTableBody.innerHTML = "";
+      if (!technicians.length) return;
+
+      const labs = technicians.map(t => t.labourSales || 0);
+      const maxLab = Math.max(...labs, 0);
+      const diffs = technicians.map(
+        tt => Math.abs((tt.chargedHours || 0) - (tt.workedHours || 0)) || 0
+      );
+      const maxDiff = Math.max(...diffs, 0);
+      const unappliedList = technicians.map(tt => tt.unappliedHours || 0);
+      const maxUnap = Math.max(...unappliedList, 0);
+
+      const list = technicians.map(t => {
+        const prod = clamp(t.productivityPct || 0, 0, 150);
+        const eff = clamp(t.efficiencyPct || 0, 0, 150);
+        const chg = clamp(t.chargeEffPct || 0, 0, 150);
+
+        const labourScore = maxLab > 0 ? (t.labourSales / maxLab) * 100 : 0;
+
+        const clockRatio =
+          t.clockedAcctHours > 0
+            ? clamp((t.clockedHours / t.clockedAcctHours) * 100, 0, 130)
+            : 0;
+
+        const thisDiff = Math.abs((t.chargedHours || 0) - (t.workedHours || 0));
+        const loadScore =
+          maxDiff > 0 ? 100 - (thisDiff / maxDiff) * 40 : 100;
+
+        const thisUnap = t.unappliedHours || 0;
+        const unappScore =
+          maxUnap > 0 ? 100 - (thisUnap / maxUnap) * 40 : 100;
+
+        const metrics = [];
+        if (isFinite(t.productivityPct)) metrics.push(t.productivityPct);
+        if (isFinite(t.efficiencyPct)) metrics.push(t.efficiencyPct);
+        if (isFinite(t.chargeEffPct)) metrics.push(t.chargeEffPct);
+        let consistencyScore = 0;
+        if (metrics.length) {
+          const deviations = metrics.map(m => Math.abs(m - 100));
+          const avgDev =
+            deviations.reduce((a, b) => a + b, 0) / deviations.length;
+          consistencyScore = Math.max(0, 100 - avgDev);
+        }
+
+        const score =
+          prod * 0.12 +
+          eff * 0.20 +
+          chg * 0.18 +
+          labourScore * 0.20 +
+          clockRatio * 0.10 +
+          loadScore * 0.08 +
+          unappScore * 0.05 +
+          consistencyScore * 0.07;
+
+        return { tech: t.name, score };
+      });
+
+      const sorted = list.sort((a, b) => b.score - a.score);
+      const n = sorted.length;
+      const topCount = Math.max(1, Math.round(n * 0.05));
+      const bottomCount = Math.max(1, Math.round(n * 0.05));
+
+      sorted.forEach((entry, index) => {
+        const tr = document.createElement("tr");
+
+        const rankTd = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = "ultimate-badge";
+        badge.textContent = index + 1;
+        if (index === 0) badge.classList.add("ultimate-badge--top");
+        rankTd.appendChild(badge);
+
+        const emojiSpan = document.createElement("span");
+        emojiSpan.className = "badge-emoji";
+        const isTop = index < topCount;
+        const isBottom = index >= n - bottomCount;
+        if (isTop) {
+          emojiSpan.textContent = index === 0 ? "🏆⭐" : "⭐";
+        }
+        if (isBottom) {
+          emojiSpan.textContent = "🔻";
+          tr.classList.add("row-bottom");
+        }
+        if (emojiSpan.textContent) {
+          rankTd.appendChild(emojiSpan);
+        }
+
+        tr.appendChild(rankTd);
+
+        const techTd = document.createElement("td");
+        techTd.textContent = entry.tech;
+        tr.appendChild(techTd);
+
+        const scoreTd = document.createElement("td");
+        scoreTd.textContent = entry.score.toFixed(1);
+        tr.appendChild(scoreTd);
+
+        ultimateTableBody.appendChild(tr);
+      });
+    }
+
+    function saveSnapshot() {
+      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const d = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      const filename = `TechnicianDashboard_${d.getFullYear()}-${pad(
+        d.getMonth() + 1
+      )}-${pad(d.getDate())}_${pad(d.getHours())}${pad(
+        d.getMinutes()
+      )}.html`;
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+
+
+</body></html>
