@@ -3,6 +3,10 @@
   <meta charset="UTF-8">
   <title>Blackburn Kia, Nissan and GWM – Technician Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
   <style>
     :root {
       --bg: #050510;
@@ -1059,7 +1063,9 @@
               <th>Score</th>
             </tr>
           </thead>
-          <tbody><tr><td><span class="ultimate-badge ultimate-badge--top">1</span><span class="badge-emoji">🏆⭐</span></td><td>Rebekka Walker</td><td>107.6</td></tr><tr><td><span class="ultimate-badge">2</span></td><td>Alan Grossman</td><td>106.8</td></tr><tr><td><span class="ultimate-badge">3</span></td><td>Ruchira Kankanamalage</td><td>106.5</td></tr><tr><td><span class="ultimate-badge">4</span></td><td>San Croos</td><td>106.2</td></tr><tr><td><span class="ultimate-badge">5</span></td><td>Thomas Nooteboom</td><td>97.7</td></tr><tr><td><span class="ultimate-badge">6</span></td><td>Alexander Lee</td><td>94.5</td></tr><tr><td><span class="ultimate-badge">7</span></td><td>Marley Gayle</td><td>94.4</td></tr><tr><td><span class="ultimate-badge">8</span></td><td>Suraj</td><td>91.2</td></tr><tr><td><span class="ultimate-badge">9</span></td><td>Jasper Menzi</td><td>88.7</td></tr><tr><td><span class="ultimate-badge">10</span></td><td>Nipun Vidanage</td><td>88.2</td></tr><tr><td><span class="ultimate-badge">11</span></td><td>Jason Yu</td><td>84.1</td></tr><tr><td><span class="ultimate-badge">12</span></td><td>Aaron Lewis</td><td>83.5</td></tr><tr><td><span class="ultimate-badge">13</span></td><td>Peter Tryfonos</td><td>82.0</td></tr><tr><td><span class="ultimate-badge">14</span></td><td>Nixon Frasco</td><td>81.8</td></tr><tr><td><span class="ultimate-badge">15</span></td><td>Stephen Thompson</td><td>80.1</td></tr><tr><td><span class="ultimate-badge">16</span></td><td>Alex Hui</td><td>78.5</td></tr><tr><td><span class="ultimate-badge">17</span></td><td>Liam Wilkins-kaighin</td><td>71.0</td></tr><tr><td><span class="ultimate-badge">18</span></td><td>Nicolas Pritchard</td><td>69.5</td></tr><tr class="row-bottom"><td><span class="ultimate-badge">19</span><span class="badge-emoji">🔻</span></td><td>Kon Loudovaris</td><td>68.2</td></tr></tbody>
+          <tbody>
+            <!-- Filled dynamically -->
+          </tbody>
         </table>
       </div>
     </div>
@@ -1090,6 +1096,8 @@
     </div>
   </div>
   <script>
+document.addEventListener("DOMContentLoaded", function() {
+
     // === LIVE DATA PROVISION ===
     // When ready, paste your OneDrive direct CSV link here:
     const LIVE_CSV_URL = ""; // e.g. "https://your-onedrive-link/technician_performance.csv"
@@ -2505,7 +2513,8 @@
       a.remove();
       URL.revokeObjectURL(url);
     }
-  </script>
+});  // <-- closes DOMContentLoaded
+</script>
 
 
 </body></html>
