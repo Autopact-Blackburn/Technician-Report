@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-  <meta charset="UTF-8">
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
   <title>Blackburn Kia, Nissan and GWM – Technician Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 
   <style>
     :root {
@@ -839,11 +840,15 @@
         <div class="card-header">
           <div>
             <div class="card-title">KPI Gauges</div>
-            <div class="section-subtitle" id="viewLabel">Workshop Total – All Technicians</div>
+            <div class="section-subtitle" id="viewLabel">
+              Workshop Total – All Technicians
+            </div>
           </div>
           <div class="tech-select-group">
             <label for="techSelect">Technician / View</label>
-            <select id="techSelect"><option value="__TOTAL__">Workshop Total (All Techs)</option><option value="Alan Grossman">Alan Grossman</option><option value="San Croos">San Croos</option><option value="Rebekka Walker">Rebekka Walker</option><option value="Ruchira Kankanamalage">Ruchira Kankanamalage</option><option value="Thomas Nooteboom">Thomas Nooteboom</option><option value="Alexander Lee">Alexander Lee</option><option value="Marley Gayle">Marley Gayle</option><option value="Aaron Lewis">Aaron Lewis</option><option value="Nipun Vidanage">Nipun Vidanage</option><option value="Peter Tryfonos">Peter Tryfonos</option><option value="Alex Hui">Alex Hui</option><option value="Stephen Thompson">Stephen Thompson</option><option value="Nixon Frasco">Nixon Frasco</option><option value="Jason Yu">Jason Yu</option><option value="Jasper Menzi">Jasper Menzi</option><option value="Suraj">Suraj</option><option value="Kon Loudovaris">Kon Loudovaris</option><option value="Liam Wilkins-kaighin">Liam Wilkins-kaighin</option><option value="Nicolas Pritchard">Nicolas Pritchard</option></select>
+            <select id="techSelect" disabled>
+              <option value="">Upload CSV first…</option>
+            </select>
           </div>
         </div>
 
@@ -860,11 +865,13 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeProdFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 126.165;"></circle>
+                <circle id="gaugeProdFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Productivity
                 </text>
-                <text id="innerValProductivity" x="50" y="44" text-anchor="middle" class="gauge-inner-value">100%</text>
+                <text id="innerValProductivity" x="50" y="44" text-anchor="middle" class="gauge-inner-value">
+                  – %
+                </text>
               </svg>
             </div>
             <div class="gauge-band">Time clocked on jobs vs available hours</div>
@@ -875,11 +882,13 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeEffFill" class="gauge-fill gauge-fill--green" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 125.664;"></circle>
+                <circle id="gaugeEffFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Efficiency
                 </text>
-                <text id="innerValEfficiency" x="50" y="44" text-anchor="middle" class="gauge-inner-value">103%</text>
+                <text id="innerValEfficiency" x="50" y="44" text-anchor="middle" class="gauge-inner-value">
+                  – %
+                </text>
               </svg>
             </div>
             <div class="gauge-band">Hours sold vs hours taken</div>
@@ -890,11 +899,13 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeChargeFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 130.926;"></circle>
+                <circle id="gaugeChargeFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Charge Eff
                 </text>
-                <text id="innerValCharging" x="50" y="44" text-anchor="middle" class="gauge-inner-value">96%</text>
+                <text id="innerValCharging" x="50" y="44" text-anchor="middle" class="gauge-inner-value">
+                  – %
+                </text>
               </svg>
             </div>
             <div class="gauge-band">What you clock vs what gets billed</div>
@@ -903,20 +914,26 @@
 
         <!-- Info tiles -->
         <div class="info-strip">
-          <div class="info-tile tile--red" id="tileLoad">
+          <div class="info-tile" id="tileLoad">
             <div class="info-tile-title">Hours Charged vs Worked</div>
-            <div class="info-tile-main">Charged: 1667.8 h • Worked: 1740.7 h</div>
-            <div class="info-tile-sub">Under-fed by 72.9 h. Talk to the controller about more flagged hours.</div>
+            <div class="info-tile-main">No data yet</div>
+            <div class="info-tile-sub">
+              Upload a CSV and select a technician to see load balance.
+            </div>
           </div>
-          <div class="info-tile tile--green" id="tileClock">
+          <div class="info-tile" id="tileClock">
             <div class="info-tile-title">Clocking Accuracy</div>
-            <div class="info-tile-main">Clocking Accuracy: 107.0%</div>
-            <div class="info-tile-sub">Excellent. Workshop and accounting are aligned (leakage ~7.0%).</div>
+            <div class="info-tile-main">No data yet</div>
+            <div class="info-tile-sub">
+              Measures <strong>Clocked</strong> vs <strong>Clocked (Acct)</strong>.
+            </div>
           </div>
-          <div class="info-tile tile--green" id="tileConsistency">
+          <div class="info-tile" id="tileConsistency">
             <div class="info-tile-title">Consistency Score</div>
-            <div class="info-tile-main">Consistency Score: 97/100</div>
-            <div class="info-tile-sub">Very stable performance. Productivity, Efficiency &amp; Charge Eff are all hovering around target.</div>
+            <div class="info-tile-main">No data yet</div>
+            <div class="info-tile-sub">
+              Shows how tightly Productivity, Efficiency & Charge Eff sit around the target band.
+            </div>
           </div>
         </div>
 
@@ -927,14 +944,18 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeLabourTotalFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 165.341;"></circle>
+                <circle id="gaugeLabourTotalFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Labour Sales
                 </text>
-                <text id="innerValLabourTotal" x="50" y="44" text-anchor="middle" class="gauge-inner-value">$239,489</text>
+                <text id="innerValLabourTotal" x="50" y="44" text-anchor="middle" class="gauge-inner-value">
+                  $0
+                </text>
               </svg>
             </div>
-            <div class="gauge-band" id="labourTotalBand">Workshop vs Target (68%)</div>
+            <div class="gauge-band" id="labourTotalBand">
+              Workshop vs Target
+            </div>
           </div>
 
           <!-- Target % / Contribution -->
@@ -942,14 +963,18 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeLabourTargetFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 165.341;"></circle>
+                <circle id="gaugeLabourTargetFill" class="gauge-fill gauge-fill--yellow" cx="50" cy="50" r="40"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Target %
                 </text>
-                <text id="innerValLabourTarget" x="50" y="44" text-anchor="middle" class="gauge-inner-value">68%</text>
+                <text id="innerValLabourTarget" x="50" y="44" text-anchor="middle" class="gauge-inner-value">
+                  – %
+                </text>
               </svg>
             </div>
-            <div class="gauge-band" id="labourTargetBand">Target Achievement</div>
+            <div class="gauge-band" id="labourTargetBand">
+              Target achievement / contribution
+            </div>
           </div>
         </div>
       </section>
@@ -958,7 +983,7 @@
       <section class="card">
         <div class="card-header">
           <div>
-            <div class="card-title">Leaderboard &amp; Insights</div>
+            <div class="card-title">Leaderboard & Insights</div>
             <div class="section-subtitle">
               Ranked by Labour Sales, then KPIs
             </div>
@@ -981,7 +1006,9 @@
                 <th>Charge Eff %</th>
               </tr>
             </thead>
-            <tbody><tr><td><span class="badge badge--top">1</span><span class="badge-emoji">🏆⭐</span></td><td>Alan Grossman</td><td>$21,797</td><td>100%</td><td>129%</td><td>128%</td></tr><tr><td><span class="badge">2</span></td><td>San Croos</td><td>$21,541</td><td>100%</td><td>127%</td><td>127%</td></tr><tr><td><span class="badge">3</span></td><td>Rebekka Walker</td><td>$21,346</td><td>98%</td><td>137%</td><td>136%</td></tr><tr><td><span class="badge">4</span></td><td>Ruchira Kankanamalage</td><td>$19,584</td><td>100%</td><td>134%</td><td>122%</td></tr><tr><td><span class="badge">5</span></td><td>Thomas Nooteboom</td><td>$17,357</td><td>100%</td><td>107%</td><td>109%</td></tr><tr><td><span class="badge">6</span></td><td>Alexander Lee</td><td>$17,189</td><td>95%</td><td>108%</td><td>102%</td></tr><tr><td><span class="badge">7</span></td><td>Marley Gayle</td><td>$14,945</td><td>102%</td><td>100%</td><td>98%</td></tr><tr><td><span class="badge">8</span></td><td>Aaron Lewis</td><td>$12,563</td><td>100%</td><td>77%</td><td>98%</td></tr><tr><td><span class="badge">9</span></td><td>Nipun Vidanage</td><td>$12,485</td><td>100%</td><td>101%</td><td>81%</td></tr><tr><td><span class="badge">10</span></td><td>Peter Tryfonos</td><td>$11,811</td><td>100%</td><td>88%</td><td>71%</td></tr><tr><td><span class="badge">11</span></td><td>Alex Hui</td><td>$11,447</td><td>94%</td><td>86%</td><td>78%</td></tr><tr><td><span class="badge">12</span></td><td>Stephen Thompson</td><td>$10,142</td><td>100%</td><td>86%</td><td>73%</td></tr><tr><td><span class="badge">13</span></td><td>Nixon Frasco</td><td>$9,733</td><td>98%</td><td>89%</td><td>85%</td></tr><tr><td><span class="badge">14</span></td><td>Jason Yu</td><td>$8,668</td><td>100%</td><td>92%</td><td>92%</td></tr><tr><td><span class="badge">15</span></td><td>Jasper Menzi</td><td>$8,581</td><td>101%</td><td>104%</td><td>96%</td></tr><tr><td><span class="badge">16</span></td><td>Suraj</td><td>$8,470</td><td>109%</td><td>114%</td><td>81%</td></tr><tr><td><span class="badge">17</span></td><td>Kon Loudovaris</td><td>$6,048</td><td>100%</td><td>68%</td><td>55%</td></tr><tr><td><span class="badge">18</span></td><td>Liam Wilkins-kaighin</td><td>$3,093</td><td>99%</td><td>77%</td><td>64%</td></tr><tr class="row-bottom"><td><span class="badge">19</span><span class="badge-emoji">🔻</span></td><td>Nicolas Pritchard</td><td>$2,688</td><td>100%</td><td>73%</td><td>62%</td></tr></tbody>
+            <tbody>
+              <!-- Filled from CSV -->
+            </tbody>
           </table>
 
           <div class="metrics-card">
@@ -997,7 +1024,9 @@
                   <th>Value</th>
                 </tr>
               </thead>
-              <tbody><tr><td>Productivity %</td><td>Suraj</td><td>109%</td></tr><tr><td>Efficiency %</td><td>Rebekka Walker</td><td>137%</td></tr><tr><td>Charge Eff %</td><td>Rebekka Walker</td><td>136%</td></tr><tr><td>Labour Sales</td><td>Alan Grossman</td><td>$21,797</td></tr><tr><td>Clock Accuracy %</td><td>Suraj</td><td>154%</td></tr><tr><td>Load Balance</td><td>Aaron Lewis</td><td>1.4h from perfect</td></tr><tr><td>Unapplied Hours</td><td>Suraj</td><td>-7.57 h</td></tr></tbody>
+              <tbody>
+                <!-- Filled from CSV -->
+              </tbody>
             </table>
           </div>
         </div>
@@ -1008,7 +1037,7 @@
     <section class="controls card">
       <div class="control-group">
         <label for="csvInput">1. Upload Technician CSV (manual mode)</label>
-        <input id="csvInput" type="file" accept=".csv">
+        <input id="csvInput" type="file" accept=".csv" />
         <div class="hint">
           Expected columns from DMS export:<br>
           <strong>Hours, Service, Tech, Charged, Clocked, Clocked (Acct), Worked, Labour Sales, Unapplied, Productivity, Efficiency, Charge Eff</strong><br>
@@ -1036,7 +1065,7 @@
     <div class="modal-panel">
       <div class="modal-header">
         <div class="modal-title" id="insightsTitle">Performance Insights</div>
-        <button class="modal-close" data-close-insights="">×</button>
+        <button class="modal-close" data-close-insights>&times;</button>
       </div>
       <div class="modal-body" id="insightsBody">
         Select a technician and click Insights to view recommendations.
@@ -1049,7 +1078,7 @@
     <div class="modal-panel">
       <div class="modal-header">
         <div class="modal-title">Ultimate Technician Ranking</div>
-        <button class="modal-close" data-close-ultimate="">×</button>
+        <button class="modal-close" data-close-ultimate>&times;</button>
       </div>
       <div class="modal-body">
         <p>
@@ -1076,11 +1105,11 @@
     <div class="modal-panel">
       <div class="modal-header">
         <div class="modal-title">Settings – Labour Target</div>
-        <button class="modal-close" data-close-settings="">×</button>
+        <button class="modal-close" data-close-settings>&times;</button>
       </div>
       <div class="modal-body">
         <p><strong>Labour Sales Target</strong></p>
-        <input id="labourTargetInput" type="number" min="0" step="1000">
+        <input id="labourTargetInput" type="number" min="0" step="1000" />
         <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
           <button id="settingsSave" class="btn-small">
             <span class="icon">💾</span><span>Save</span>
@@ -2549,8 +2578,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const originalHTML = document.documentElement.outerHTML;
       const html =
         "<!DOCTYPE html>\n" +
-        originalHTML.replace("<script>window.__SNAPSHOT_DATA__ = {"technicians":[{"name":"Alan Grossman","chargedHours":142.35,"clockedHours":111.4,"clockedAcctHours":110.46,"workedHours":111.54,"labourSales":21797.26,"unappliedHours":0.14,"productivityPct":99.87448450000001,"efficiencyPct":128.8701793,"chargeEffPct":127.6223776},{"name":"San Croos","chargedHours":140.43,"clockedHours":110.3,"clockedAcctHours":110.18,"workedHours":110.53,"labourSales":21540.87,"unappliedHours":0.23,"productivityPct":99.7919117,"efficiencyPct":127.4550735,"chargeEffPct":127.05147919999999},{"name":"Rebekka Walker","chargedHours":139.37,"clockedHours":100.33,"clockedAcctHours":101.95,"workedHours":102.11,"labourSales":21346.09,"unappliedHours":1.78,"productivityPct":98.25678190000001,"efficiencyPct":136.7042668,"chargeEffPct":136.49005970000002},{"name":"Ruchira Kankanamalage","chargedHours":128.61,"clockedHours":105.72,"clockedAcctHours":95.9,"workedHours":105.67,"labourSales":19583.84,"unappliedHours":-0.05,"productivityPct":100.04731710000001,"efficiencyPct":134.1084463,"chargeEffPct":121.7090944},{"name":"Thomas Nooteboom","chargedHours":119.96,"clockedHours":110.67,"clockedAcctHours":112.35,"workedHours":110.27,"labourSales":17356.74,"unappliedHours":-0.4,"productivityPct":100.36274599999999,"efficiencyPct":106.77347569999999,"chargeEffPct":108.7875215},{"name":"Alexander Lee","chargedHours":128.29,"clockedHours":118.83,"clockedAcctHours":118.89,"workedHours":125.32,"labourSales":17188.95,"unappliedHours":6.49,"productivityPct":94.8212576,"efficiencyPct":107.9064682,"chargeEffPct":102.36993299999999},{"name":"Marley Gayle","chargedHours":105.29,"clockedHours":109.54,"clockedAcctHours":105.49,"workedHours":107.26,"labourSales":14945.09,"unappliedHours":-2.28,"productivityPct":102.12567589999999,"efficiencyPct":99.8104086,"chargeEffPct":98.16334140000001},{"name":"Aaron Lewis","chargedHours":92.02,"clockedHours":93.01,"clockedAcctHours":119.47,"workedHours":93.46,"labourSales":12563.47,"unappliedHours":0.45,"productivityPct":99.5185106,"efficiencyPct":77.0235205,"chargeEffPct":98.4592339},{"name":"Nipun Vidanage","chargedHours":90.2,"clockedHours":110.45,"clockedAcctHours":89.25,"workedHours":110.9,"labourSales":12485.17,"unappliedHours":0.45,"productivityPct":99.594229,"efficiencyPct":101.0644258,"chargeEffPct":81.3345356},{"name":"Peter Tryfonos","chargedHours":79.84,"clockedHours":112.65,"clockedAcctHours":90.63,"workedHours":112.39,"labourSales":11811.23,"unappliedHours":-0.26,"productivityPct":100.2313373,"efficiencyPct":88.09445,"chargeEffPct":71.0383486},{"name":"Alex Hui","chargedHours":82.62,"clockedHours":100.26,"clockedAcctHours":96.29,"workedHours":106.37,"labourSales":11447.29,"unappliedHours":6.11,"productivityPct":94.2558992,"efficiencyPct":85.8033025,"chargeEffPct":77.672276},{"name":"Stephen Thompson","chargedHours":76.08,"clockedHours":104.06,"clockedAcctHours":88.02,"workedHours":104.2,"labourSales":10141.51,"unappliedHours":0.14,"productivityPct":99.865643,"efficiencyPct":86.4349012,"chargeEffPct":73.0134357},{"name":"Nixon Frasco","chargedHours":68.67,"clockedHours":79.07,"clockedAcctHours":77.28,"workedHours":80.73,"labourSales":9733.45,"unappliedHours":1.66,"productivityPct":97.9437632,"efficiencyPct":88.8586957,"chargeEffPct":85.0613155},{"name":"Jason Yu","chargedHours":62.23,"clockedHours":67.85,"clockedAcctHours":67.44,"workedHours":67.83,"labourSales":8667.9,"unappliedHours":-0.02,"productivityPct":100.02948549999999,"efficiencyPct":92.2746145,"chargeEffPct":91.744066},{"name":"Jasper Menzi","chargedHours":57.24,"clockedHours":60.1,"clockedAcctHours":55.12,"workedHours":59.58,"labourSales":8580.7,"unappliedHours":-0.52,"productivityPct":100.87277610000001,"efficiencyPct":103.8461538,"chargeEffPct":96.0725076},{"name":"Suraj","chargedHours":67.55,"clockedHours":91.1,"clockedAcctHours":59.17,"workedHours":83.53,"labourSales":8470.43,"unappliedHours":-7.57,"productivityPct":109.0626122,"efficiencyPct":114.16258239999999,"chargeEffPct":80.8691488},{"name":"Kon Loudovaris","chargedHours":44.05,"clockedHours":80.11,"clockedAcctHours":64.93,"workedHours":80.47,"labourSales":6047.92,"unappliedHours":0.36,"productivityPct":99.5526283,"efficiencyPct":67.8422917,"chargeEffPct":54.740897200000006},{"name":"Liam Wilkins-kaighin","chargedHours":21.65,"clockedHours":33.77,"clockedAcctHours":28.21,"workedHours":34,"labourSales":3093.24,"unappliedHours":0.23,"productivityPct":99.3235294,"efficiencyPct":76.7458348,"chargeEffPct":63.6764706},{"name":"Nicolas Pritchard","chargedHours":21.39,"clockedHours":34.57,"clockedAcctHours":29.13,"workedHours":34.57,"labourSales":2688.15,"unappliedHours":0,"productivityPct":100,"efficiencyPct":73.4294542,"chargeEffPct":61.8744576}],"workshopTotal":{"name":"Workshop Total","chargedHours":1667.84,"clockedHours":1733.79,"clockedAcctHours":1620.16,"workedHours":1740.73,"labourSales":239489.3,"unappliedHours":6.94,"productivityPct":99.6013167,"efficiencyPct":102.9429192,"chargeEffPct":95.81267629999999},"labourTarget":350000,"theme":"dark","selectedTech":"__TOTAL__"}<\/script>
-</body>", stateScript + "\n</body>");
+        originalHTML.replace("</body>", stateScript + "\n</body>");
 
       const blob = new Blob([html], { type: "text/html" });
       const url = URL.createObjectURL(blob);
@@ -2571,6 +2599,5 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });  // <-- closes DOMContentLoaded
 </script>
-
-
-</body></html>
+</body>
+</html>
