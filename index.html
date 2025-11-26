@@ -927,14 +927,14 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeLabourTotalFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 172.13;"></circle>
+                <circle id="gaugeLabourTotalFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 165.341;"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Labour Sales
                 </text>
                 <text id="innerValLabourTotal" x="50" y="44" text-anchor="middle" class="gauge-inner-value">$239,489</text>
               </svg>
             </div>
-            <div class="gauge-band" id="labourTotalBand">Workshop vs Target (63%)</div>
+            <div class="gauge-band" id="labourTotalBand">Workshop vs Target (68%)</div>
           </div>
 
           <!-- Target % / Contribution -->
@@ -942,11 +942,11 @@
             <div class="gauge-wrapper">
               <svg class="gauge" viewBox="0 0 100 60">
                 <circle class="gauge-track" cx="50" cy="50" r="40"></circle>
-                <circle id="gaugeLabourTargetFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 172.13;"></circle>
+                <circle id="gaugeLabourTargetFill" class="gauge-fill gauge-fill--red" cx="50" cy="50" r="40" style="stroke-dasharray: 251.327, 251.327; stroke-dashoffset: 165.341;"></circle>
                 <text x="50" y="32" text-anchor="middle" class="gauge-inner-label">
                   Target %
                 </text>
-                <text id="innerValLabourTarget" x="50" y="44" text-anchor="middle" class="gauge-inner-value">63%</text>
+                <text id="innerValLabourTarget" x="50" y="44" text-anchor="middle" class="gauge-inner-value">68%</text>
               </svg>
             </div>
             <div class="gauge-band" id="labourTargetBand">Target Achievement</div>
@@ -1261,8 +1261,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const savedTheme = localStorage.getItem("bbk-tech-theme");
     if (savedTheme === "light") {
       document.body.classList.add("light");
-      updateThemeToggleText();
     }
+    updateThemeToggleText();
 
     themeToggle.addEventListener("click", () => {
       document.body.classList.toggle("light");
@@ -1298,6 +1298,35 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
     initGauges();
+
+    // === SNAPSHOT BOOTSTRAP (for downloaded snapshots) ===
+    const snapshotData = window.__SNAPSHOT_DATA__;
+    if (snapshotData) {
+      // Theme from snapshot
+      if (snapshotData.theme === "light") {
+        document.body.classList.add("light");
+      } else {
+        document.body.classList.remove("light");
+      }
+      updateThemeToggleText();
+
+      // Restore data/state
+      technicians   = snapshotData.technicians   || [];
+      workshopTotal = snapshotData.workshopTotal || null;
+      labourTarget  = snapshotData.labourTarget  || labourTarget;
+
+      populateTechSelect(technicians);
+      populateLeaderboard(technicians);
+      populateMetricRankings(technicians);
+
+      if (technicians.length || workshopTotal) {
+        techSelect.disabled = false;
+        techSelect.value = snapshotData.selectedTech || "__TOTAL__";
+        updateDashboardForView(techSelect.value);
+      }
+      // Skip live CSV in snapshot files
+      return;
+    }
 
     // If LIVE_CSV_URL is set later, this will make it live without changing anything else
     if (LIVE_CSV_URL) {
@@ -1367,6 +1396,7 @@ document.addEventListener("DOMContentLoaded", function() {
       };
       reader.readAsText(file);
     }
+
     function parseTechnicianCSV(text) {
       const lines = text
         .split(/\r?\n/)
@@ -2369,6 +2399,7 @@ document.addEventListener("DOMContentLoaded", function() {
           });
         });
     }
+
     function computeMedian(arr) {
       const nums = arr.filter(v => typeof v === "number" && isFinite(v));
       if (!nums.length) return 0;
@@ -2494,8 +2525,33 @@ document.addEventListener("DOMContentLoaded", function() {
       });
     }
 
+    // === NEW: saveSnapshot now embeds data so snapshot is fully functional ===
     function saveSnapshot() {
-      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      if (!technicians.length && !workshopTotal) {
+        alert("Nothing to snapshot yet. Upload a CSV first.");
+        return;
+      }
+
+      const state = {
+        technicians,
+        workshopTotal,
+        labourTarget,
+        theme: document.body.classList.contains("light") ? "light" : "dark",
+        selectedTech: techSelect.value || "__TOTAL__"
+      };
+
+      const stateScript =
+  "<script>window.__SNAPSHOT_DATA__ = " +
+  JSON.stringify(state).replace(/<\/script>/gi, "<\\/script>") +
+  "<\\/script>";
+
+
+      const originalHTML = document.documentElement.outerHTML;
+      const html =
+        "<!DOCTYPE html>\n" +
+        originalHTML.replace("<script>window.__SNAPSHOT_DATA__ = {"technicians":[{"name":"Alan Grossman","chargedHours":142.35,"clockedHours":111.4,"clockedAcctHours":110.46,"workedHours":111.54,"labourSales":21797.26,"unappliedHours":0.14,"productivityPct":99.87448450000001,"efficiencyPct":128.8701793,"chargeEffPct":127.6223776},{"name":"San Croos","chargedHours":140.43,"clockedHours":110.3,"clockedAcctHours":110.18,"workedHours":110.53,"labourSales":21540.87,"unappliedHours":0.23,"productivityPct":99.7919117,"efficiencyPct":127.4550735,"chargeEffPct":127.05147919999999},{"name":"Rebekka Walker","chargedHours":139.37,"clockedHours":100.33,"clockedAcctHours":101.95,"workedHours":102.11,"labourSales":21346.09,"unappliedHours":1.78,"productivityPct":98.25678190000001,"efficiencyPct":136.7042668,"chargeEffPct":136.49005970000002},{"name":"Ruchira Kankanamalage","chargedHours":128.61,"clockedHours":105.72,"clockedAcctHours":95.9,"workedHours":105.67,"labourSales":19583.84,"unappliedHours":-0.05,"productivityPct":100.04731710000001,"efficiencyPct":134.1084463,"chargeEffPct":121.7090944},{"name":"Thomas Nooteboom","chargedHours":119.96,"clockedHours":110.67,"clockedAcctHours":112.35,"workedHours":110.27,"labourSales":17356.74,"unappliedHours":-0.4,"productivityPct":100.36274599999999,"efficiencyPct":106.77347569999999,"chargeEffPct":108.7875215},{"name":"Alexander Lee","chargedHours":128.29,"clockedHours":118.83,"clockedAcctHours":118.89,"workedHours":125.32,"labourSales":17188.95,"unappliedHours":6.49,"productivityPct":94.8212576,"efficiencyPct":107.9064682,"chargeEffPct":102.36993299999999},{"name":"Marley Gayle","chargedHours":105.29,"clockedHours":109.54,"clockedAcctHours":105.49,"workedHours":107.26,"labourSales":14945.09,"unappliedHours":-2.28,"productivityPct":102.12567589999999,"efficiencyPct":99.8104086,"chargeEffPct":98.16334140000001},{"name":"Aaron Lewis","chargedHours":92.02,"clockedHours":93.01,"clockedAcctHours":119.47,"workedHours":93.46,"labourSales":12563.47,"unappliedHours":0.45,"productivityPct":99.5185106,"efficiencyPct":77.0235205,"chargeEffPct":98.4592339},{"name":"Nipun Vidanage","chargedHours":90.2,"clockedHours":110.45,"clockedAcctHours":89.25,"workedHours":110.9,"labourSales":12485.17,"unappliedHours":0.45,"productivityPct":99.594229,"efficiencyPct":101.0644258,"chargeEffPct":81.3345356},{"name":"Peter Tryfonos","chargedHours":79.84,"clockedHours":112.65,"clockedAcctHours":90.63,"workedHours":112.39,"labourSales":11811.23,"unappliedHours":-0.26,"productivityPct":100.2313373,"efficiencyPct":88.09445,"chargeEffPct":71.0383486},{"name":"Alex Hui","chargedHours":82.62,"clockedHours":100.26,"clockedAcctHours":96.29,"workedHours":106.37,"labourSales":11447.29,"unappliedHours":6.11,"productivityPct":94.2558992,"efficiencyPct":85.8033025,"chargeEffPct":77.672276},{"name":"Stephen Thompson","chargedHours":76.08,"clockedHours":104.06,"clockedAcctHours":88.02,"workedHours":104.2,"labourSales":10141.51,"unappliedHours":0.14,"productivityPct":99.865643,"efficiencyPct":86.4349012,"chargeEffPct":73.0134357},{"name":"Nixon Frasco","chargedHours":68.67,"clockedHours":79.07,"clockedAcctHours":77.28,"workedHours":80.73,"labourSales":9733.45,"unappliedHours":1.66,"productivityPct":97.9437632,"efficiencyPct":88.8586957,"chargeEffPct":85.0613155},{"name":"Jason Yu","chargedHours":62.23,"clockedHours":67.85,"clockedAcctHours":67.44,"workedHours":67.83,"labourSales":8667.9,"unappliedHours":-0.02,"productivityPct":100.02948549999999,"efficiencyPct":92.2746145,"chargeEffPct":91.744066},{"name":"Jasper Menzi","chargedHours":57.24,"clockedHours":60.1,"clockedAcctHours":55.12,"workedHours":59.58,"labourSales":8580.7,"unappliedHours":-0.52,"productivityPct":100.87277610000001,"efficiencyPct":103.8461538,"chargeEffPct":96.0725076},{"name":"Suraj","chargedHours":67.55,"clockedHours":91.1,"clockedAcctHours":59.17,"workedHours":83.53,"labourSales":8470.43,"unappliedHours":-7.57,"productivityPct":109.0626122,"efficiencyPct":114.16258239999999,"chargeEffPct":80.8691488},{"name":"Kon Loudovaris","chargedHours":44.05,"clockedHours":80.11,"clockedAcctHours":64.93,"workedHours":80.47,"labourSales":6047.92,"unappliedHours":0.36,"productivityPct":99.5526283,"efficiencyPct":67.8422917,"chargeEffPct":54.740897200000006},{"name":"Liam Wilkins-kaighin","chargedHours":21.65,"clockedHours":33.77,"clockedAcctHours":28.21,"workedHours":34,"labourSales":3093.24,"unappliedHours":0.23,"productivityPct":99.3235294,"efficiencyPct":76.7458348,"chargeEffPct":63.6764706},{"name":"Nicolas Pritchard","chargedHours":21.39,"clockedHours":34.57,"clockedAcctHours":29.13,"workedHours":34.57,"labourSales":2688.15,"unappliedHours":0,"productivityPct":100,"efficiencyPct":73.4294542,"chargeEffPct":61.8744576}],"workshopTotal":{"name":"Workshop Total","chargedHours":1667.84,"clockedHours":1733.79,"clockedAcctHours":1620.16,"workedHours":1740.73,"labourSales":239489.3,"unappliedHours":6.94,"productivityPct":99.6013167,"efficiencyPct":102.9429192,"chargeEffPct":95.81267629999999},"labourTarget":350000,"theme":"dark","selectedTech":"__TOTAL__"}<\/script>
+</body>", stateScript + "\n</body>");
+
       const blob = new Blob([html], { type: "text/html" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
